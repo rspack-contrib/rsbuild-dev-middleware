@@ -16,26 +16,6 @@ const parseTokenList = require("./utils/parseTokenList");
 const memorize = require("./utils/memorize");
 
 /**
- * Get the default charset for a MIME type.
- *
- * @param {string} mimeType
- * @return {false|string}
- */
-function getCharset(mimeType) {
-  // default text/* to utf-8
-  if (
-    mimeType.startsWith("text/") ||
-    mimeType === "application/json" ||
-    mimeType === "application/manifest+json" ||
-    mimeType === "application/javascript"
-  ) {
-    return "UTF-8";
-  }
-
-  return false;
-}
-
-/**
  * Create a full Content-Type header given a MIME type or extension.
  *
  * @param {string} str
@@ -43,14 +23,16 @@ function getCharset(mimeType) {
  */
 function getContentType(str) {
   let mime = mrmime.lookup(str);
-
   if (!mime) {
     return false;
   }
-
-  const charset = getCharset(mime);
-  if (charset) mime += `; charset=${  charset.toLowerCase()}`;
-
+  if (
+    mime.startsWith("text/") ||
+    mime === "application/json" ||
+    mime === "application/manifest+json"
+  ) {
+    mime += `; charset=utf-8`;
+  }
   return mime;
 }
 
