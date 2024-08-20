@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      colorette:
-        specifier: ^2.0.10
-        version: 2.0.20
       memfs:
         specifier: ^4.6.0
         version: 4.11.1
