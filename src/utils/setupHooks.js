@@ -29,25 +29,6 @@ function setupHooks(context) {
   }
 
   /**
-   * @param {StatsOptions} statsOptions
-   * @returns {StatsObjectOptions}
-   */
-  function normalizeStatsOptions(statsOptions) {
-    if (typeof statsOptions === "undefined") {
-      // eslint-disable-next-line no-param-reassign
-      statsOptions = { preset: "normal" };
-    } else if (typeof statsOptions === "boolean") {
-      // eslint-disable-next-line no-param-reassign
-      statsOptions = statsOptions ? { preset: "normal" } : { preset: "none" };
-    } else if (typeof statsOptions === "string") {
-      // eslint-disable-next-line no-param-reassign
-      statsOptions = { preset: statsOptions };
-    }
-
-    return statsOptions;
-  }
-
-  /**
    * @param {Stats | MultiStats} stats
    */
   function done(stats) {
@@ -59,7 +40,7 @@ function setupHooks(context) {
 
     // Do the stuff in nextTick, because bundle may be invalidated if a change happened while compiling
     process.nextTick(() => {
-      const { compiler, logger, options, state, callbacks } = context;
+      const { logger, state, callbacks } = context;
 
       // Check if still in valid state
       if (!state) {
@@ -67,78 +48,6 @@ function setupHooks(context) {
       }
 
       logger.log("Compilation finished");
-
-      const isMultiCompilerMode = Boolean(
-        /** @type {MultiCompiler} */
-        (compiler).compilers,
-      );
-
-      /**
-       * @type {StatsOptions | MultiStatsOptions | undefined}
-       */
-      let statsOptions;
-
-      if (typeof options.stats !== "undefined") {
-        statsOptions = isMultiCompilerMode
-          ? {
-              children:
-                /** @type {MultiCompiler} */
-                (compiler).compilers.map(() => options.stats),
-            }
-          : options.stats;
-      } else {
-        statsOptions = isMultiCompilerMode
-          ? {
-              children:
-                /** @type {MultiCompiler} */
-                (compiler).compilers.map((child) => child.options.stats),
-            }
-          : /** @type {Compiler} */ (compiler).options.stats;
-      }
-
-      if (isMultiCompilerMode) {
-        /** @type {MultiStatsOptions} */
-        (statsOptions).children =
-          /** @type {MultiStatsOptions} */
-          (statsOptions).children.map(
-            /**
-             * @param {StatsOptions} childStatsOptions
-             * @return {StatsObjectOptions}
-             */
-            (childStatsOptions) => {
-              // eslint-disable-next-line no-param-reassign
-              childStatsOptions = normalizeStatsOptions(childStatsOptions);
-
-              if (typeof childStatsOptions.colors === "undefined") {
-                // eslint-disable-next-line no-param-reassign
-                childStatsOptions.colors =
-                  // eslint-disable-next-line global-require
-                  require("colorette").isColorSupported;
-              }
-
-              return childStatsOptions;
-            },
-          );
-      } else {
-        statsOptions = normalizeStatsOptions(
-          /** @type {StatsOptions} */ (statsOptions),
-        );
-
-        if (typeof statsOptions.colors === "undefined") {
-          // eslint-disable-next-line global-require
-          statsOptions.colors = require("colorette").isColorSupported;
-        }
-      }
-
-      const printedStats = stats.toString(
-        /** @type {StatsObjectOptions} */ (statsOptions),
-      );
-
-      // Avoid extra empty line when `stats: 'none'`
-      if (printedStats) {
-        // eslint-disable-next-line no-console
-        console.log(printedStats);
-      }
 
       // eslint-disable-next-line no-param-reassign
       context.callbacks = [];
