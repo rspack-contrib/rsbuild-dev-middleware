@@ -1,6 +1,6 @@
 const path = require("path");
 
-const mime = require("mime-types");
+const mrmime = require("mrmime");
 
 const onFinishedStream = require("on-finished");
 
@@ -14,6 +14,45 @@ const {
 const ready = require("./utils/ready");
 const parseTokenList = require("./utils/parseTokenList");
 const memorize = require("./utils/memorize");
+
+/**
+ * Get the default charset for a MIME type.
+ *
+ * @param {string} mimeType
+ * @return {false|string}
+ */
+function getCharset(mimeType) {
+  // default text/* to utf-8
+  if (
+    mimeType.startsWith("text/") ||
+    mimeType === "application/json" ||
+    mimeType === "application/manifest+json" ||
+    mimeType === "application/javascript"
+  ) {
+    return "UTF-8";
+  }
+
+  return false;
+}
+
+/**
+ * Create a full Content-Type header given a MIME type or extension.
+ *
+ * @param {string} str
+ * @return {false|string}
+ */
+function getContentType(str) {
+  let mime = mrmime.lookup(str);
+
+  if (!mime) {
+    return false;
+  }
+
+  const charset = getCharset(mime);
+  if (charset) mime += `; charset=${  charset.toLowerCase()}`;
+
+  return mime;
+}
 
 /** @typedef {import("./index.js").NextFunction} NextFunction */
 /** @typedef {import("./index.js").IncomingMessage} IncomingMessage */
@@ -448,8 +487,8 @@ function wrapper(context) {
       let offset = 0;
 
       if (!res.getHeader("Content-Type")) {
-        // content-type name(like application/javascript; charset=utf-8) or false
-        const contentType = mime.contentType(path.extname(filename));
+        // content-type name(like text/javascript; charset=utf-8) or false
+        const contentType = getContentType(path.extname(filename));
 
         // Only set content-type header if media type is known
         // https://tools.ietf.org/html/rfc7231#section-3.1.1.5

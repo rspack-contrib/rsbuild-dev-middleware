@@ -55,7 +55,7 @@
   },
   "dependencies": {
     "memfs": "^4.6.0",
-    "mime-types": "^2.1.31",
+    "mrmime": "^2.0.0",
     "on-finished": "^2.4.1",
     "range-parser": "^1.2.1"
   },
@@ -68,7 +68,6 @@
     "@fastify/express": "^2.3.0",
     "@types/connect": "^3.4.35",
     "@types/express": "^4.17.13",
-    "@types/mime-types": "^2.1.1",
     "@types/node": "^20.11.16",
     "@types/on-finished": "^2.3.4",
     "@types/range-parser": "^1.2.7",
