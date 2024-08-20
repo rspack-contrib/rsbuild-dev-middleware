@@ -41,7 +41,6 @@ export = wdm;
 /**
  * @template {IncomingMessage} [RequestInternal=IncomingMessage]
  * @template {ServerResponse} [ResponseInternal=ServerResponse]
- * @callback ModifyResponseData
  * @param {RequestInternal} req
  * @param {ResponseInternal} res
  * @param {Buffer | ReadStream} data
@@ -84,7 +83,6 @@ export = wdm;
  * @property {boolean} [serverSideRender]
  * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
- * @property {ModifyResponseData<RequestInternal, ResponseInternal>} [modifyResponseData]
  * @property {"weak" | "strong"} [etag]
  * @property {boolean} [lastModified]
  */
@@ -174,7 +172,6 @@ declare namespace wdm {
     Logger,
     Callback,
     ResponseData,
-    ModifyResponseData,
     Context,
     FilledContext,
     NormalizedHeaders,
@@ -227,15 +224,6 @@ type ResponseData = {
   data: Buffer | ReadStream;
   byteLength: number;
 };
-type ModifyResponseData<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = (
-  req: RequestInternal,
-  res: ResponseInternal,
-  data: Buffer | ReadStream,
-  byteLength: number,
-) => ResponseData;
 type Context<
   RequestInternal extends IncomingMessage = import("http").IncomingMessage,
   ResponseInternal extends ServerResponse = ServerResponse,
@@ -282,9 +270,6 @@ type Options<
   serverSideRender?: boolean | undefined;
   outputFileSystem?: OutputFileSystem | undefined;
   index?: string | boolean | undefined;
-  modifyResponseData?:
-    | ModifyResponseData<RequestInternal, ResponseInternal>
-    | undefined;
   etag?: "strong" | "weak" | undefined;
   lastModified?: boolean | undefined;
 };

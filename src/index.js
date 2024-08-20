@@ -61,7 +61,6 @@ const noop = () => {};
 /**
  * @template {IncomingMessage} [RequestInternal=IncomingMessage]
  * @template {ServerResponse} [ResponseInternal=ServerResponse]
- * @callback ModifyResponseData
  * @param {RequestInternal} req
  * @param {ResponseInternal} res
  * @param {Buffer | ReadStream} data
@@ -109,7 +108,6 @@ const noop = () => {};
  * @property {boolean} [serverSideRender]
  * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
- * @property {ModifyResponseData<RequestInternal, ResponseInternal>} [modifyResponseData]
  * @property {"weak" | "strong"} [etag]
  * @property {boolean} [lastModified]
  */

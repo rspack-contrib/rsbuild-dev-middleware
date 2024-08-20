@@ -4,7 +4,6 @@ export = wrapper;
  * @template {ServerResponse} Response
  * @typedef {Object} SendErrorOptions send error options
  * @property {Record<string, number | string | string[] | undefined>=} headers headers
- * @property {import("./index").ModifyResponseData<Request, Response>=} modifyResponseData modify response data callback
  */
 /**
  * @template {IncomingMessage} Request
@@ -39,12 +38,6 @@ type SendErrorOptions<
    * headers
    */
   headers?: Record<string, number | string | string[] | undefined> | undefined;
-  /**
-   * modify response data callback
-   */
-  modifyResponseData?:
-    | import("./index").ModifyResponseData<Request, Response>
-    | undefined;
 };
 type NextFunction = import("./index.js").NextFunction;
 type IncomingMessage = import("./index.js").IncomingMessage;

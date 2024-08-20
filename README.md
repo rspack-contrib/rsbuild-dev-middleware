@@ -71,7 +71,6 @@ See [below](#other-servers) for an example of use with fastify.
 |   **[`serverSideRender`](#serversiderender)**   |           `Boolean`           |                  `undefined`                  | Instructs the module to enable or disable the server-side rendering mode.                                            |
 |        **[`writeToDisk`](#writetodisk)**        |      `Boolean\|Function`      |                    `false`                    | Instructs the module to write files to the configured location on disk as specified in your `webpack` configuration. |
 |   **[`outputFileSystem`](#outputfilesystem)**   |           `Object`            | [`memfs`](https://github.com/streamich/memfs) | Set the default file system which will be used by webpack as primary destination of generated files.                 |
-| **[`modifyResponseData`](#modifyresponsedata)** |          `Function`           |                  `undefined`                  | Allows to set up a callback to change the response data.                                                             |
 
 The middleware accepts an `options` Object. The following is a property reference for the Object.
 
@@ -243,28 +242,6 @@ const compiler = webpack({
 });
 
 middleware(compiler, { outputFileSystem: myOutputFileSystem });
-```
-
-### modifyResponseData
-
-Allows to set up a callback to change the response data.
-
-```js
-const webpack = require("webpack");
-const configuration = {
-  /* Webpack configuration */
-};
-const compiler = webpack(configuration);
-
-middleware(compiler, {
-  // Note - if you send the `Range` header you will have `ReadStream`
-  // Also `data` can be `string` or `Buffer`
-  modifyResponseData: (req, res, data, byteLength) => {
-    // Your logic
-    // Don't use `res.end()` or `res.send()` here
-    return { data, byteLength };
-  },
-});
 ```
 
 ## API

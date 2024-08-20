@@ -110,7 +110,6 @@ const parseRangeHeaders = memorize(
  * @template {ServerResponse} Response
  * @typedef {Object} SendErrorOptions send error options
  * @property {Record<string, number | string | string[] | undefined>=} headers headers
- * @property {import("./index").ModifyResponseData<Request, Response>=} modifyResponseData modify response data callback
  */
 
 /**
@@ -162,7 +161,7 @@ function wrapper(context) {
       // eslint-disable-next-line global-require
       const escapeHtml = require("./utils/escapeHtml");
       const content = statuses[status] || String(status);
-      let document = Buffer.from(
+      const document = Buffer.from(
         `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -202,13 +201,7 @@ function wrapper(context) {
       res.setHeader("Content-Security-Policy", "default-src 'none'");
       res.setHeader("X-Content-Type-Options", "nosniff");
 
-      let byteLength = Buffer.byteLength(document);
-
-      if (options && options.modifyResponseData) {
-        ({ data: document, byteLength } =
-          /** @type {{ data: Buffer, byteLength: number }} */
-          (options.modifyResponseData(req, res, document, byteLength)));
-      }
+      const byteLength = Buffer.byteLength(document);
 
       res.setHeader("Content-Length", byteLength);
 
@@ -438,9 +431,7 @@ function wrapper(context) {
           context.logger.error(`Malicious path "${filename}".`);
         }
 
-        sendError(extra.errorCode, {
-          modifyResponseData: context.options.modifyResponseData,
-        });
+        sendError(extra.errorCode);
 
         return;
       }
@@ -573,9 +564,7 @@ function wrapper(context) {
       // Conditional GET support
       if (isConditionalGET()) {
         if (isPreconditionFailure()) {
-          sendError(412, {
-            modifyResponseData: context.options.modifyResponseData,
-          });
+          sendError(412);
 
           return;
         }
@@ -630,7 +619,6 @@ function wrapper(context) {
             headers: {
               "Content-Range": res.getHeader("Content-Range"),
             },
-            modifyResponseData: context.options.modifyResponseData,
           });
 
           return;
@@ -678,17 +666,6 @@ function wrapper(context) {
         }
       }
 
-      if (context.options.modifyResponseData) {
-        ({ data: bufferOrStream, byteLength } =
-          context.options.modifyResponseData(
-            req,
-            res,
-            bufferOrStream,
-            // @ts-ignore
-            byteLength,
-          ));
-      }
-
       // @ts-ignore
       res.setHeader("Content-Length", byteLength);
 
@@ -731,14 +708,10 @@ function wrapper(context) {
           case "ENAMETOOLONG":
           case "ENOENT":
           case "ENOTDIR":
-            sendError(404, {
-              modifyResponseData: context.options.modifyResponseData,
-            });
+            sendError(404);
             break;
           default:
-            sendError(500, {
-              modifyResponseData: context.options.modifyResponseData,
-            });
+            sendError(500);
             break;
         }
       });

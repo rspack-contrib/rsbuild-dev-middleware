@@ -4267,62 +4267,6 @@ describe.each([
       });
     });
 
-    describe("modifyResponseData option", () => {
-      describe("should work", () => {
-        let compiler;
-
-        beforeAll(async () => {
-          const outputPath = path.resolve(
-            __dirname,
-            "./outputs/modify-response-data",
-          );
-
-          compiler = getCompiler({
-            ...webpackConfig,
-            output: {
-              filename: "bundle.js",
-              path: outputPath,
-            },
-          });
-
-          [server, req, instance] = await frameworkFactory(
-            name,
-            framework,
-            compiler,
-            {
-              modifyResponseData: () => {
-                const result = Buffer.from("test");
-
-                return { data: result, byteLength: result.length };
-              },
-            },
-          );
-
-          instance.context.outputFileSystem.mkdirSync(outputPath, {
-            recursive: true,
-          });
-          instance.context.outputFileSystem.writeFileSync(
-            path.resolve(outputPath, "file.html"),
-            "welcome",
-          );
-        });
-
-        afterAll(async () => {
-          await close(server, instance);
-        });
-
-        it("should modify file", async () => {
-          const response = await req.get("/file.html");
-
-          expect(response.statusCode).toEqual(200);
-          expect(response.headers["content-type"]).toEqual(
-            "text/html; charset=utf-8",
-          );
-          expect(response.text).toEqual("test");
-        });
-      });
-    });
-
     describe("etag", () => {
       describe("should work and generate weak etag", () => {
         beforeEach(async () => {
