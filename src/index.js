@@ -1,5 +1,3 @@
-const mime = require("mime-types");
-
 const middleware = require("./middleware");
 const getFilenameFromUrl = require("./utils/getFilenameFromUrl");
 const setupHooks = require("./utils/setupHooks");
@@ -103,7 +101,6 @@ const noop = () => {};
  * @template {IncomingMessage} [RequestInternal = IncomingMessage]
  * @template {ServerResponse} [ResponseInternal = ServerResponse]
  * @typedef {Object} Options
- * @property {{[key: string]: string}} [mimeTypes]
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
  * @property {string[]} [methods]
  * @property {Headers<RequestInternal, ResponseInternal>} [headers]
@@ -188,17 +185,6 @@ const noop = () => {};
  * @returns {API<RequestInternal, ResponseInternal>}
  */
 function wdm(compiler, options = {}) {
-  const { mimeTypes } = options;
-
-  if (mimeTypes) {
-    const { types } = mime;
-
-    // mimeTypes from user provided options should take priority
-    // over existing, known types
-    // @ts-ignore
-    mime.types = { ...types, ...mimeTypes };
-  }
-
   /**
    * @type {WithOptional<Context<RequestInternal, ResponseInternal>, "watching" | "outputFileSystem">}
    */

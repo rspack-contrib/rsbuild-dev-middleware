@@ -65,7 +65,6 @@ See [below](#other-servers) for an example of use with fastify.
 |            **[`methods`](#methods)**            |            `Array`            |              `[ 'GET', 'HEAD' ]`              | Allows to pass the list of HTTP request methods accepted by the middleware                                           |
 |            **[`headers`](#headers)**            |   `Array\|Object\|Function`   |                  `undefined`                  | Allows to pass custom HTTP headers on each request.                                                                  |
 |              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
-|          **[`mimeTypes`](#mimetypes)**          |           `Object`            |                  `undefined`                  | Allows to register custom mime types or extension mappings.                                                          |
 |               **[`etag`](#tag)**                | `boolean\| "weak"\| "strong"` |                  `undefined`                  | Enable or disable etag generation.                                                                                   |
 |         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
 |              **[`stats`](#stats)**              |   `Boolean\|String\|Object`   |        `stats` (from a configuration)         | Stats options object or preset name.                                                                                 |
@@ -153,16 +152,6 @@ Type: `Boolean|String`
 Default: `index.html`
 
 If `false` (but not `undefined`), the server will not respond to requests to the root URL.
-
-### mimeTypes
-
-Type: `Object`  
-Default: `undefined`
-
-This property allows a user to register custom mime types or extension mappings.
-eg. `mimeTypes: { phtml: 'text/html' }`.
-
-Please see the documentation for [`mime-types`](https://github.com/jshttp/mime-types) for more information.
 
 ### etag
 

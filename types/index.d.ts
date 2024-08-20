@@ -76,7 +76,6 @@ export = wdm;
  * @template {IncomingMessage} [RequestInternal = IncomingMessage]
  * @template {ServerResponse} [ResponseInternal = ServerResponse]
  * @typedef {Object} Options
- * @property {{[key: string]: string}} [mimeTypes]
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
  * @property {string[]} [methods]
  * @property {Headers<RequestInternal, ResponseInternal>} [headers]
@@ -275,11 +274,6 @@ type Options<
   RequestInternal extends IncomingMessage = import("http").IncomingMessage,
   ResponseInternal extends ServerResponse = ServerResponse,
 > = {
-  mimeTypes?:
-    | {
-        [key: string]: string;
-      }
-    | undefined;
   writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
   methods?: string[] | undefined;
   headers?: Headers<RequestInternal, ResponseInternal>;
