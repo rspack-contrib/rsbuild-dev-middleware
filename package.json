@@ -1,6 +1,6 @@
 {
   "name": "rsbuild-dev-middleware",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "A development middleware for Rsbuild",
   "license": "MIT",
   "repository": "webpack/webpack-dev-middleware",
