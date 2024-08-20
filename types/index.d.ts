@@ -151,55 +151,9 @@ export = wdm;
  * @param {Options<RequestInternal, ResponseInternal>} [options]
  * @returns {API<RequestInternal, ResponseInternal>}
  */
-declare function wdm<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
->(
-  compiler: Compiler | MultiCompiler,
-  options?: Options<RequestInternal, ResponseInternal> | undefined,
-): API<RequestInternal, ResponseInternal>;
+declare function wdm<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse>(compiler: Compiler | MultiCompiler, options?: Options<RequestInternal, ResponseInternal> | undefined): API<RequestInternal, ResponseInternal>;
 declare namespace wdm {
-  export {
-    hapiWrapper,
-    koaWrapper,
-    Schema,
-    Compiler,
-    MultiCompiler,
-    Configuration,
-    Stats,
-    MultiStats,
-    ReadStream,
-    ExtendedServerResponse,
-    IncomingMessage,
-    ServerResponse,
-    NextFunction,
-    WatchOptions,
-    Watching,
-    MultiWatching,
-    OutputFileSystem,
-    Logger,
-    Callback,
-    ResponseData,
-    ModifyResponseData,
-    Context,
-    FilledContext,
-    NormalizedHeaders,
-    Headers,
-    Options,
-    Middleware,
-    Extra,
-    GetFilenameFromUrl,
-    WaitUntilValid,
-    Invalidate,
-    Close,
-    AdditionalMethods,
-    API,
-    WithOptional,
-    WithoutUndefined,
-    HapiPluginBase,
-    HapiPlugin,
-    HapiOptions,
-  };
+    export { hapiWrapper, koaWrapper, Schema, Compiler, MultiCompiler, Configuration, Stats, MultiStats, ReadStream, ExtendedServerResponse, IncomingMessage, ServerResponse, NextFunction, WatchOptions, Watching, MultiWatching, OutputFileSystem, Logger, Callback, ResponseData, ModifyResponseData, Context, FilledContext, NormalizedHeaders, Headers, Options, Middleware, Extra, GetFilenameFromUrl, WaitUntilValid, Invalidate, Close, AdditionalMethods, API, WithOptional, WithoutUndefined, HapiPluginBase, HapiPlugin, HapiOptions };
 }
 /**
  * @template S
@@ -220,10 +174,7 @@ declare namespace wdm {
  * @template {HapiOptions} HapiOptionsInternal
  * @returns {HapiPlugin<HapiServer, HapiOptionsInternal>}
  */
-declare function hapiWrapper<
-  HapiServer,
-  HapiOptionsInternal extends HapiOptions,
->(): HapiPlugin<HapiServer, HapiOptionsInternal>;
+declare function hapiWrapper<HapiServer, HapiOptionsInternal extends HapiOptions>(): HapiPlugin<HapiServer, HapiOptionsInternal>;
 /**
  * @template {IncomingMessage} [RequestInternal=IncomingMessage]
  * @template {ServerResponse} [ResponseInternal=ServerResponse]
@@ -231,13 +182,7 @@ declare function hapiWrapper<
  * @param {Options<RequestInternal, ResponseInternal>} [options]
  * @returns {(ctx: any, next: Function) => Promise<void> | void}
  */
-declare function koaWrapper<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
->(
-  compiler: Compiler | MultiCompiler,
-  options?: Options<RequestInternal, ResponseInternal> | undefined,
-): (ctx: any, next: Function) => Promise<void> | void;
+declare function koaWrapper<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse>(compiler: Compiler | MultiCompiler, options?: Options<RequestInternal, ResponseInternal> | undefined): (ctx: any, next: Function) => Promise<void> | void;
 type Schema = import("schema-utils/declarations/validate").Schema;
 type Compiler = import("webpack").Compiler;
 type MultiCompiler = import("webpack").MultiCompiler;
@@ -246,13 +191,11 @@ type Stats = import("webpack").Stats;
 type MultiStats = import("webpack").MultiStats;
 type ReadStream = import("fs").ReadStream;
 type ExtendedServerResponse = {
-  locals?:
-    | {
+    locals?: {
         webpack?: {
-          devMiddleware?: Context<IncomingMessage, ServerResponse>;
+            devMiddleware?: Context<IncomingMessage, ServerResponse>;
         };
-      }
-    | undefined;
+    } | undefined;
 };
 type IncomingMessage = import("http").IncomingMessage;
 type ServerResponse = import("http").ServerResponse & ExtendedServerResponse;
@@ -261,129 +204,75 @@ type WatchOptions = NonNullable<Configuration["watchOptions"]>;
 type Watching = Compiler["watching"];
 type MultiWatching = ReturnType<MultiCompiler["watch"]>;
 type OutputFileSystem = Object & {
-  createReadStream?: typeof import("fs").createReadStream;
-  statSync?: import("fs").StatSyncFn;
-  lstat?: typeof import("fs").lstat;
-  readFileSync?: typeof import("fs").readFileSync;
+    createReadStream?: typeof import("fs").createReadStream;
+    statSync?: import("fs").StatSyncFn;
+    lstat?: typeof import("fs").lstat;
+    readFileSync?: typeof import("fs").readFileSync;
 };
 type Logger = ReturnType<Compiler["getInfrastructureLogger"]>;
-type Callback = (
-  stats?: import("webpack").Stats | import("webpack").MultiStats | undefined,
-) => any;
+type Callback = (stats?: import("webpack").Stats | import("webpack").MultiStats | undefined) => any;
 type ResponseData = {
-  data: Buffer | ReadStream;
-  byteLength: number;
+    data: Buffer | ReadStream;
+    byteLength: number;
 };
-type ModifyResponseData<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = (
-  req: RequestInternal,
-  res: ResponseInternal,
-  data: Buffer | ReadStream,
-  byteLength: number,
-) => ResponseData;
-type Context<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = {
-  state: boolean;
-  stats: Stats | MultiStats | undefined;
-  callbacks: Callback[];
-  options: Options<RequestInternal, ResponseInternal>;
-  compiler: Compiler | MultiCompiler;
-  watching: Watching | MultiWatching | undefined;
-  logger: Logger;
-  outputFileSystem: OutputFileSystem;
+type ModifyResponseData<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = (req: RequestInternal, res: ResponseInternal, data: Buffer | ReadStream, byteLength: number) => ResponseData;
+type Context<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = {
+    state: boolean;
+    stats: Stats | MultiStats | undefined;
+    callbacks: Callback[];
+    options: Options<RequestInternal, ResponseInternal>;
+    compiler: Compiler | MultiCompiler;
+    watching: Watching | MultiWatching | undefined;
+    logger: Logger;
+    outputFileSystem: OutputFileSystem;
 };
-type FilledContext<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = WithoutUndefined<Context<RequestInternal, ResponseInternal>, "watching">;
-type NormalizedHeaders =
-  | Record<string, string | number>
-  | Array<{
-      key: string;
-      value: number | string;
-    }>;
-type Headers<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> =
-  | NormalizedHeaders
-  | ((
-      req: RequestInternal,
-      res: ResponseInternal,
-      context: Context<RequestInternal, ResponseInternal>,
-    ) => void | undefined | NormalizedHeaders)
-  | undefined;
-type Options<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = {
-  mimeTypes?:
-    | {
+type FilledContext<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = WithoutUndefined<Context<RequestInternal, ResponseInternal>, "watching">;
+type NormalizedHeaders = Record<string, string | number> | Array<{
+    key: string;
+    value: number | string;
+}>;
+type Headers<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = NormalizedHeaders | ((req: RequestInternal, res: ResponseInternal, context: Context<RequestInternal, ResponseInternal>) => void | undefined | NormalizedHeaders) | undefined;
+type Options<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = {
+    mimeTypes?: {
         [key: string]: string;
-      }
-    | undefined;
-  mimeTypeDefault?: string | undefined;
-  writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
-  methods?: string[] | undefined;
-  headers?: Headers<RequestInternal, ResponseInternal>;
-  publicPath?: NonNullable<Configuration["output"]>["publicPath"];
-  stats?: Configuration["stats"];
-  serverSideRender?: boolean | undefined;
-  outputFileSystem?: OutputFileSystem | undefined;
-  index?: string | boolean | undefined;
-  modifyResponseData?:
-    | ModifyResponseData<RequestInternal, ResponseInternal>
-    | undefined;
-  etag?: "strong" | "weak" | undefined;
-  lastModified?: boolean | undefined;
+    } | undefined;
+    mimeTypeDefault?: string | undefined;
+    writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
+    methods?: string[] | undefined;
+    headers?: Headers<RequestInternal, ResponseInternal>;
+    publicPath?: NonNullable<Configuration["output"]>["publicPath"];
+    stats?: Configuration["stats"];
+    serverSideRender?: boolean | undefined;
+    outputFileSystem?: OutputFileSystem | undefined;
+    index?: string | boolean | undefined;
+    modifyResponseData?: ModifyResponseData<RequestInternal, ResponseInternal> | undefined;
+    etag?: "strong" | "weak" | undefined;
+    lastModified?: boolean | undefined;
 };
-type Middleware<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = (
-  req: RequestInternal,
-  res: ResponseInternal,
-  next: NextFunction,
-) => Promise<void>;
+type Middleware<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = (req: RequestInternal, res: ResponseInternal, next: NextFunction) => Promise<void>;
 type Extra = import("./utils/getFilenameFromUrl").Extra;
-type GetFilenameFromUrl = (
-  url: string,
-  extra?: Extra | undefined,
-) => string | undefined;
+type GetFilenameFromUrl = (url: string, extra?: Extra | undefined) => string | undefined;
 type WaitUntilValid = (callback: Callback) => any;
 type Invalidate = (callback: Callback) => any;
 type Close = (callback: (err: Error | null | undefined) => void) => any;
-type AdditionalMethods<
-  RequestInternal extends IncomingMessage,
-  ResponseInternal extends ServerResponse,
-> = {
-  getFilenameFromUrl: GetFilenameFromUrl;
-  waitUntilValid: WaitUntilValid;
-  invalidate: Invalidate;
-  close: Close;
-  context: Context<RequestInternal, ResponseInternal>;
+type AdditionalMethods<RequestInternal extends IncomingMessage, ResponseInternal extends ServerResponse> = {
+    getFilenameFromUrl: GetFilenameFromUrl;
+    waitUntilValid: WaitUntilValid;
+    invalidate: Invalidate;
+    close: Close;
+    context: Context<RequestInternal, ResponseInternal>;
 };
-type API<
-  RequestInternal extends IncomingMessage = import("http").IncomingMessage,
-  ResponseInternal extends ServerResponse = ServerResponse,
-> = Middleware<RequestInternal, ResponseInternal> &
-  AdditionalMethods<RequestInternal, ResponseInternal>;
+type API<RequestInternal extends IncomingMessage = import("http").IncomingMessage, ResponseInternal extends ServerResponse = ServerResponse> = Middleware<RequestInternal, ResponseInternal> & AdditionalMethods<RequestInternal, ResponseInternal>;
 type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<T>;
-type WithoutUndefined<T, K extends keyof T> = T & {
-  [P in K]: NonNullable<T[P]>;
-};
+type WithoutUndefined<T, K extends keyof T> = T & { [P in K]: NonNullable<T[P]>; };
 type HapiPluginBase<S, O> = {
-  register: (server: S, options: O) => void | Promise<void>;
+    register: (server: S, options: O) => void | Promise<void>;
 };
 type HapiPlugin<S, O> = HapiPluginBase<S, O> & {
-  pkg: {
-    name: string;
-  };
+    pkg: {
+        name: string;
+    };
 };
 type HapiOptions = Options & {
-  compiler: Compiler | MultiCompiler;
+    compiler: Compiler | MultiCompiler;
 };

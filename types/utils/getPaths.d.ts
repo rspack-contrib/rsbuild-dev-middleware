@@ -9,17 +9,12 @@ export = getPaths;
  * @template {ServerResponse} Response
  * @param {import("../index.js").FilledContext<Request, Response>} context
  */
-declare function getPaths<
-  Request extends IncomingMessage,
-  Response extends ServerResponse,
->(
-  context: import("../index.js").FilledContext<Request, Response>,
-): {
-  outputPath: string;
-  publicPath: string;
+declare function getPaths<Request extends IncomingMessage, Response extends ServerResponse>(context: import("../index.js").FilledContext<Request, Response>): {
+    outputPath: string;
+    publicPath: string;
 }[];
 declare namespace getPaths {
-  export { Compiler, Stats, MultiStats, IncomingMessage, ServerResponse };
+    export { Compiler, Stats, MultiStats, IncomingMessage, ServerResponse };
 }
 type Compiler = import("webpack").Compiler;
 type Stats = import("webpack").Stats;

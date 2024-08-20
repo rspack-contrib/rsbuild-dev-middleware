@@ -7,20 +7,13 @@ export = getFilenameFromUrl;
  * @param {Extra=} extra
  * @returns {string | undefined}
  */
-declare function getFilenameFromUrl<
-  Request extends IncomingMessage,
-  Response extends ServerResponse,
->(
-  context: import("../index.js").FilledContext<Request, Response>,
-  url: string,
-  extra?: Extra | undefined,
-): string | undefined;
+declare function getFilenameFromUrl<Request extends IncomingMessage, Response extends ServerResponse>(context: import("../index.js").FilledContext<Request, Response>, url: string, extra?: Extra | undefined): string | undefined;
 declare namespace getFilenameFromUrl {
-  export { Extra, IncomingMessage, ServerResponse };
+    export { Extra, IncomingMessage, ServerResponse };
 }
 type Extra = {
-  stats?: import("fs").Stats | undefined;
-  errorCode?: number | undefined;
+    stats?: import("fs").Stats | undefined;
+    errorCode?: number | undefined;
 };
 type IncomingMessage = import("../index.js").IncomingMessage;
 type ServerResponse = import("../index.js").ServerResponse;

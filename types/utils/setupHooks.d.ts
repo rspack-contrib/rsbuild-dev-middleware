@@ -14,28 +14,9 @@ export = setupHooks;
  * @template {ServerResponse} Response
  * @param {import("../index.js").WithOptional<import("../index.js").Context<Request, Response>, "watching" | "outputFileSystem">} context
  */
-declare function setupHooks<
-  Request extends IncomingMessage,
-  Response extends ServerResponse,
->(
-  context: import("../index.js").WithOptional<
-    import("../index.js").Context<Request, Response>,
-    "watching" | "outputFileSystem"
-  >,
-): void;
+declare function setupHooks<Request extends IncomingMessage, Response extends ServerResponse>(context: import("../index.js").WithOptional<import("../index.js").Context<Request, Response>, "watching" | "outputFileSystem">): void;
 declare namespace setupHooks {
-  export {
-    Configuration,
-    Compiler,
-    MultiCompiler,
-    Stats,
-    MultiStats,
-    IncomingMessage,
-    ServerResponse,
-    StatsOptions,
-    MultiStatsOptions,
-    StatsObjectOptions,
-  };
+    export { Configuration, Compiler, MultiCompiler, Stats, MultiStats, IncomingMessage, ServerResponse, StatsOptions, MultiStatsOptions, StatsObjectOptions };
 }
 type Configuration = import("webpack").Configuration;
 type Compiler = import("webpack").Compiler;
@@ -46,9 +27,6 @@ type IncomingMessage = import("../index.js").IncomingMessage;
 type ServerResponse = import("../index.js").ServerResponse;
 type StatsOptions = Configuration["stats"];
 type MultiStatsOptions = {
-  children: Configuration["stats"][];
+    children: Configuration["stats"][];
 };
-type StatsObjectOptions = Exclude<
-  Configuration["stats"],
-  boolean | string | undefined
->;
+type StatsObjectOptions = Exclude<Configuration["stats"], boolean | string | undefined>;

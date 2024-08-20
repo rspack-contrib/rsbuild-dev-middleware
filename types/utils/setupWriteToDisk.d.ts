@@ -9,23 +9,9 @@ export = setupWriteToDisk;
  * @template {ServerResponse} Response
  * @param {import("../index.js").WithOptional<import("../index.js").Context<Request, Response>, "watching" | "outputFileSystem">} context
  */
-declare function setupWriteToDisk<
-  Request extends IncomingMessage,
-  Response extends ServerResponse,
->(
-  context: import("../index.js").WithOptional<
-    import("../index.js").Context<Request, Response>,
-    "watching" | "outputFileSystem"
-  >,
-): void;
+declare function setupWriteToDisk<Request extends IncomingMessage, Response extends ServerResponse>(context: import("../index.js").WithOptional<import("../index.js").Context<Request, Response>, "watching" | "outputFileSystem">): void;
 declare namespace setupWriteToDisk {
-  export {
-    Compiler,
-    MultiCompiler,
-    Compilation,
-    IncomingMessage,
-    ServerResponse,
-  };
+    export { Compiler, MultiCompiler, Compilation, IncomingMessage, ServerResponse };
 }
 type Compiler = import("webpack").Compiler;
 type MultiCompiler = import("webpack").MultiCompiler;

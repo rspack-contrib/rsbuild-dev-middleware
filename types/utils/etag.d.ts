@@ -6,11 +6,11 @@ export = etag;
  * @return {Promise<{ hash: string, buffer?: Buffer }>}
  */
 declare function etag(entity: Buffer | ReadStream | Stats): Promise<{
-  hash: string;
-  buffer?: Buffer;
+    hash: string;
+    buffer?: Buffer;
 }>;
 declare namespace etag {
-  export { Stats, ReadStream };
+    export { Stats, ReadStream };
 }
 type Stats = import("fs").Stats;
 type ReadStream = import("fs").ReadStream;
