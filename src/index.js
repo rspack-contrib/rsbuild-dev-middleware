@@ -102,7 +102,6 @@ const noop = () => {};
  * @typedef {Object} Options
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
  * @property {string[]} [methods]
- * @property {Headers<RequestInternal, ResponseInternal>} [headers]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {Configuration["stats"]} [stats]
  * @property {boolean} [serverSideRender]

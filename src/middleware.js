@@ -447,33 +447,6 @@ function wrapper(context) {
       let len = size;
       let offset = 0;
 
-      // Send logic
-      let { headers } = context.options;
-
-      if (typeof headers === "function") {
-        headers = /** @type {NormalizedHeaders} */ (headers(req, res, context));
-      }
-
-      /**
-       * @type {{key: string, value: string | number}[]}
-       */
-      const allHeaders = [];
-
-      if (typeof headers !== "undefined") {
-        if (!Array.isArray(headers)) {
-          // eslint-disable-next-line guard-for-in
-          for (const name in headers) {
-            allHeaders.push({ key: name, value: headers[name] });
-          }
-
-          headers = allHeaders;
-        }
-
-        headers.forEach((header) => {
-          res.setHeader(header.key, header.value);
-        });
-      }
-
       if (!res.getHeader("Content-Type")) {
         // content-type name(like application/javascript; charset=utf-8) or false
         const contentType = mime.contentType(path.extname(filename));

@@ -63,7 +63,6 @@ See [below](#other-servers) for an example of use with fastify.
 |                      Name                       |             Type              |                    Default                    | Description                                                                                                          |
 | :---------------------------------------------: | :---------------------------: | :-------------------------------------------: | :------------------------------------------------------------------------------------------------------------------- |
 |            **[`methods`](#methods)**            |            `Array`            |              `[ 'GET', 'HEAD' ]`              | Allows to pass the list of HTTP request methods accepted by the middleware                                           |
-|            **[`headers`](#headers)**            |   `Array\|Object\|Function`   |                  `undefined`                  | Allows to pass custom HTTP headers on each request.                                                                  |
 |              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
 |               **[`etag`](#tag)**                | `boolean\| "weak"\| "strong"` |                  `undefined`                  | Enable or disable etag generation.                                                                                   |
 |         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
@@ -80,70 +79,6 @@ Type: `Array`
 Default: `[ 'GET', 'HEAD' ]`
 
 This property allows a user to pass the list of HTTP request methods accepted by the middleware\*\*.
-
-### headers
-
-Type: `Array|Object|Function`
-Default: `undefined`
-
-This property allows a user to pass custom HTTP headers on each request.
-eg. `{ "X-Custom-Header": "yes" }`
-
-or
-
-```js
-webpackDevMiddleware(compiler, {
-  headers: () => {
-    return {
-      "Last-Modified": new Date(),
-    };
-  },
-});
-```
-
-or
-
-```js
-webpackDevMiddleware(compiler, {
-  headers: (req, res, context) => {
-    res.setHeader("Last-Modified", new Date());
-  },
-});
-```
-
-or
-
-```js
-webpackDevMiddleware(compiler, {
-  headers: [
-    {
-      key: "X-custom-header",
-      value: "foo",
-    },
-    {
-      key: "Y-custom-header",
-      value: "bar",
-    },
-  ],
-});
-```
-
-or
-
-```js
-webpackDevMiddleware(compiler, {
-  headers: () => [
-    {
-      key: "X-custom-header",
-      value: "foo",
-    },
-    {
-      key: "Y-custom-header",
-      value: "bar",
-    },
-  ],
-});
-```
 
 ### index
 
