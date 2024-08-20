@@ -3049,52 +3049,6 @@ describe.each([
       });
     });
 
-    describe("mimeTypeDefault option", () => {
-      describe('should set the correct value for "Content-Type" header to unknown MIME type', () => {
-        beforeAll(async () => {
-          const outputPath = path.resolve(__dirname, "./outputs/basic");
-          const compiler = getCompiler({
-            ...webpackConfig,
-            output: {
-              filename: "bundle.js",
-              path: outputPath,
-            },
-          });
-
-          [server, req, instance] = await frameworkFactory(
-            name,
-            framework,
-            compiler,
-            {
-              mimeTypeDefault: "text/plain",
-            },
-          );
-
-          instance.context.outputFileSystem.mkdirSync(outputPath, {
-            recursive: true,
-          });
-          instance.context.outputFileSystem.writeFileSync(
-            path.resolve(outputPath, "file.unknown"),
-            "welcome",
-          );
-        });
-
-        afterAll(async () => {
-          await close(server, instance);
-        });
-
-        it('should return the "200" code for the "GET" request to "file.html"', async () => {
-          const response = await req.get("/file.unknown");
-
-          expect(response.statusCode).toEqual(200);
-          expect(
-            response.headers["content-type"].startsWith("text/plain"),
-          ).toBe(true);
-          expect(response.text).toEqual("welcome");
-        });
-      });
-    });
-
     describe("watchOptions option", () => {
       describe("should work without value", () => {
         let compiler;
