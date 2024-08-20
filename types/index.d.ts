@@ -159,7 +159,6 @@ declare function wdm<
 ): API<RequestInternal, ResponseInternal>;
 declare namespace wdm {
   export {
-    hapiWrapper,
     koaWrapper,
     Compiler,
     MultiCompiler,
@@ -194,34 +193,8 @@ declare namespace wdm {
     API,
     WithOptional,
     WithoutUndefined,
-    HapiPluginBase,
-    HapiPlugin,
-    HapiOptions,
   };
 }
-/**
- * @template S
- * @template O
- * @typedef {Object} HapiPluginBase
- * @property {(server: S, options: O) => void | Promise<void>} register
- */
-/**
- * @template S
- * @template O
- * @typedef {HapiPluginBase<S, O> & { pkg: { name: string } }} HapiPlugin
- */
-/**
- * @typedef {Options & { compiler: Compiler | MultiCompiler }} HapiOptions
- */
-/**
- * @template HapiServer
- * @template {HapiOptions} HapiOptionsInternal
- * @returns {HapiPlugin<HapiServer, HapiOptionsInternal>}
- */
-declare function hapiWrapper<
-  HapiServer,
-  HapiOptionsInternal extends HapiOptions,
->(): HapiPlugin<HapiServer, HapiOptionsInternal>;
 /**
  * @template {IncomingMessage} [RequestInternal=IncomingMessage]
  * @template {ServerResponse} [ResponseInternal=ServerResponse]
@@ -372,15 +345,4 @@ type API<
 type WithOptional<T, K extends keyof T> = Omit<T, K> & Partial<T>;
 type WithoutUndefined<T, K extends keyof T> = T & {
   [P in K]: NonNullable<T[P]>;
-};
-type HapiPluginBase<S, O> = {
-  register: (server: S, options: O) => void | Promise<void>;
-};
-type HapiPlugin<S, O> = HapiPluginBase<S, O> & {
-  pkg: {
-    name: string;
-  };
-};
-type HapiOptions = Options & {
-  compiler: Compiler | MultiCompiler;
 };

@@ -287,67 +287,6 @@ function wdm(compiler, options = {}) {
 }
 
 /**
- * @template S
- * @template O
- * @typedef {Object} HapiPluginBase
- * @property {(server: S, options: O) => void | Promise<void>} register
- */
-
-/**
- * @template S
- * @template O
- * @typedef {HapiPluginBase<S, O> & { pkg: { name: string } }} HapiPlugin
- */
-
-/**
- * @typedef {Options & { compiler: Compiler | MultiCompiler }} HapiOptions
- */
-
-/**
- * @template HapiServer
- * @template {HapiOptions} HapiOptionsInternal
- * @returns {HapiPlugin<HapiServer, HapiOptionsInternal>}
- */
-function hapiWrapper() {
-  return {
-    pkg: {
-      name: "webpack-dev-middleware",
-    },
-    register(server, options) {
-      const { compiler, ...rest } = options;
-
-      if (!compiler) {
-        throw new Error("The compiler options is required.");
-      }
-
-      const devMiddleware = wdm(compiler, rest);
-
-      // @ts-ignore
-      server.decorate("server", "webpackDevMiddleware", devMiddleware);
-      // @ts-ignore
-      server.ext("onRequest", (request, h) =>
-        new Promise((resolve, reject) => {
-          devMiddleware(request.raw.req, request.raw.res, (error) => {
-            if (error) {
-              reject(error);
-              return;
-            }
-
-            resolve(request);
-          });
-        })
-          .then(() => h.continue)
-          .catch((error) => {
-            throw error;
-          }),
-      );
-    },
-  };
-}
-
-wdm.hapiWrapper = hapiWrapper;
-
-/**
  * @template {IncomingMessage} [RequestInternal=IncomingMessage]
  * @template {ServerResponse} [ResponseInternal=ServerResponse]
  * @param {Compiler | MultiCompiler} compiler

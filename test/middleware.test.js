@@ -7,7 +7,6 @@ import router from "router";
 import finalhandler from "finalhandler";
 import fastify from "fastify";
 import koa from "koa";
-import Hapi from "@hapi/hapi";
 import request from "supertest";
 import memfs, { createFsFromVolume, Volume } from "memfs";
 import del from "del";
@@ -65,39 +64,6 @@ async function frameworkFactory(
   options = {},
 ) {
   switch (name) {
-    case "hapi": {
-      const server = framework.server();
-      const hapiPlugin = {
-        plugin: middleware.hapiWrapper(),
-        options: {
-          compiler,
-          ...devMiddlewareOptions,
-        },
-      };
-
-      const middlewares =
-        typeof options.setupMiddlewares === "function"
-          ? options.setupMiddlewares([hapiPlugin])
-          : [hapiPlugin];
-
-      await Promise.all(
-        middlewares.map((item) => {
-          // eslint-disable-next-line no-shadow
-          const { plugin, options } = item;
-
-          return server.register({
-            plugin,
-            options,
-          });
-        }),
-      );
-
-      await server.start();
-
-      const req = request(server.listener);
-
-      return [server, req, server.webpackDevMiddleware];
-    }
     case "koa": {
       // eslint-disable-next-line new-cap
       const app = new framework();
@@ -164,11 +130,6 @@ async function frameworkFactory(
 }
 
 async function closeServer(server) {
-  // hapi
-  if (typeof server.stop === "function") {
-    return server.stop();
-  }
-
   return new Promise((resolve, reject) => {
     server.close((err) => {
       if (err) {
@@ -213,8 +174,6 @@ function get404ContentTypeHeader(name) {
   switch (name) {
     case "koa":
       return "text/plain; charset=utf-8";
-    case "hapi":
-      return "application/json; charset=utf-8";
     case "fastify":
       return "application/json; charset=utf-8";
     default:
@@ -223,23 +182,7 @@ function get404ContentTypeHeader(name) {
 }
 
 function applyTestMiddleware(name, middlewares) {
-  if (name === "hapi") {
-    middlewares.push({
-      plugin: {
-        name: "myPlugin",
-        version: "1.0.0",
-        register(innerServer) {
-          innerServer.route({
-            method: "GET",
-            path: "/file.jpg",
-            handler() {
-              return "welcome";
-            },
-          });
-        },
-      },
-    });
-  } else if (name === "koa") {
+  if (name === "koa") {
     middlewares.push((ctx, next) => {
       if (ctx.request.url === "/file.jpg") {
         ctx.set("Content-Type", "text/html");
@@ -281,7 +224,6 @@ describe.each([
   ["router", router],
   ["fastify", fastify],
   ["koa", koa],
-  ["hapi", Hapi],
 ])("%s framework:", (name, framework) => {
   describe("middleware", () => {
     let instance;
@@ -1820,23 +1762,6 @@ describe.each([
                     );
 
                     await next();
-                  });
-                } else if (name === "hapi") {
-                  middlewares.unshift({
-                    plugin: {
-                      name: "myPlugin",
-                      version: "1.0.0",
-                      register(innerServer) {
-                        innerServer.ext("onRequest", (innerRequest, h) => {
-                          innerRequest.raw.res.setHeader(
-                            "Content-Type",
-                            "application/vnd.test+octet-stream",
-                          );
-
-                          return h.continue;
-                        });
-                      },
-                    },
                   });
                 } else {
                   middlewares.unshift((req, res, next) => {
@@ -4166,25 +4091,6 @@ describe.each([
                   ctx.status = 200;
 
                   await next();
-                });
-              } else if (name === "hapi") {
-                middlewares.push({
-                  plugin: {
-                    name: "myPlugin",
-                    version: "1.0.0",
-                    register(innerServer) {
-                      innerServer.route({
-                        method: "GET",
-                        path: "/foo/bar",
-                        handler(innerReq) {
-                          // eslint-disable-next-line prefer-destructuring
-                          locals = innerReq.raw.res.locals;
-
-                          return "welcome";
-                        },
-                      });
-                    },
-                  },
                 });
               } else {
                 middlewares.push((_req, res) => {

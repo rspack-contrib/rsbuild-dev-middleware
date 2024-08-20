@@ -638,40 +638,6 @@ app.use(middleware.koaWrapper(compiler, devMiddlewareOptions));
 app.listen(3000);
 ```
 
-### Hapi
-
-```js
-const Hapi = require("@hapi/hapi");
-const webpack = require("webpack");
-const webpackConfig = require("./webpack.config.js");
-const devMiddleware = require("webpack-dev-middleware");
-
-const compiler = webpack(webpackConfig);
-const devMiddlewareOptions = {};
-
-(async () => {
-  const server = Hapi.server({ port: 3000, host: "localhost" });
-
-  await server.register({
-    plugin: devMiddleware.hapiPlugin(),
-    options: {
-      // The `compiler` option is required
-      compiler,
-      ...devMiddlewareOptions,
-    },
-  });
-
-  await server.start();
-
-  console.log("Server running on %s", server.info.uri);
-})();
-
-process.on("unhandledRejection", (err) => {
-  console.log(err);
-  process.exit(1);
-});
-```
-
 ### Fastify
 
 Fastify interop will require the use of `fastify-express` instead of `middie` for providing middleware support. As the authors of `fastify-express` recommend, this should only be used as a stopgap while full Fastify support is worked on.
