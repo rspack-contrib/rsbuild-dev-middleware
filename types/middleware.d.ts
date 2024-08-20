@@ -12,22 +12,39 @@ export = wrapper;
  * @param {import("./index.js").FilledContext<Request, Response>} context
  * @return {import("./index.js").Middleware<Request, Response>}
  */
-declare function wrapper<Request extends IncomingMessage, Response extends ServerResponse>(context: import("./index.js").FilledContext<Request, Response>): import("./index.js").Middleware<Request, Response>;
+declare function wrapper<
+  Request extends IncomingMessage,
+  Response extends ServerResponse,
+>(
+  context: import("./index.js").FilledContext<Request, Response>,
+): import("./index.js").Middleware<Request, Response>;
 declare namespace wrapper {
-    export { SendErrorOptions, NextFunction, IncomingMessage, ServerResponse, NormalizedHeaders, ReadStream };
+  export {
+    SendErrorOptions,
+    NextFunction,
+    IncomingMessage,
+    ServerResponse,
+    NormalizedHeaders,
+    ReadStream,
+  };
 }
 /**
  * send error options
  */
-type SendErrorOptions<Request extends IncomingMessage, Response extends ServerResponse> = {
-    /**
-     * headers
-     */
-    headers?: Record<string, number | string | string[] | undefined> | undefined;
-    /**
-     * modify response data callback
-     */
-    modifyResponseData?: import("./index").ModifyResponseData<Request, Response> | undefined;
+type SendErrorOptions<
+  Request extends IncomingMessage,
+  Response extends ServerResponse,
+> = {
+  /**
+   * headers
+   */
+  headers?: Record<string, number | string | string[] | undefined> | undefined;
+  /**
+   * modify response data callback
+   */
+  modifyResponseData?:
+    | import("./index").ModifyResponseData<Request, Response>
+    | undefined;
 };
 type NextFunction = import("./index.js").NextFunction;
 type IncomingMessage = import("./index.js").IncomingMessage;

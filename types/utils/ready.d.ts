@@ -9,9 +9,16 @@ export = ready;
  * @param {Request} [req]
  * @returns {void}
  */
-declare function ready<Request extends IncomingMessage, Response extends ServerResponse>(context: import("../index.js").FilledContext<Request, Response>, callback: (...args: any[]) => any, req?: Request | undefined): void;
+declare function ready<
+  Request extends IncomingMessage,
+  Response extends ServerResponse,
+>(
+  context: import("../index.js").FilledContext<Request, Response>,
+  callback: (...args: any[]) => any,
+  req?: Request | undefined,
+): void;
 declare namespace ready {
-    export { IncomingMessage, ServerResponse };
+  export { IncomingMessage, ServerResponse };
 }
 type IncomingMessage = import("../index.js").IncomingMessage;
 type ServerResponse = import("../index.js").ServerResponse;
