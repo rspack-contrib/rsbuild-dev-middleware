@@ -1,7 +1,7 @@
 {
-  "name": "webpack-dev-middleware",
-  "version": "7.2.1",
-  "description": "A development middleware for webpack",
+  "name": "rsbuild-dev-middleware",
+  "version": "1.0.0-beta.0",
+  "description": "A development middleware for Rsbuild",
   "license": "MIT",
   "repository": "webpack/webpack-dev-middleware",
   "author": "Tobias Koppers @sokra",
