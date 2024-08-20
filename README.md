@@ -62,7 +62,6 @@ See [below](#other-servers) for an example of use with fastify.
 
 |                      Name                       |             Type              |                    Default                    | Description                                                                                                          |
 | :---------------------------------------------: | :---------------------------: | :-------------------------------------------: | :------------------------------------------------------------------------------------------------------------------- |
-|            **[`methods`](#methods)**            |            `Array`            |              `[ 'GET', 'HEAD' ]`              | Allows to pass the list of HTTP request methods accepted by the middleware                                           |
 |              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
 |               **[`etag`](#tag)**                | `boolean\| "weak"\| "strong"` |                  `undefined`                  | Enable or disable etag generation.                                                                                   |
 |         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
@@ -72,13 +71,6 @@ See [below](#other-servers) for an example of use with fastify.
 |   **[`outputFileSystem`](#outputfilesystem)**   |           `Object`            | [`memfs`](https://github.com/streamich/memfs) | Set the default file system which will be used by webpack as primary destination of generated files.                 |
 
 The middleware accepts an `options` Object. The following is a property reference for the Object.
-
-### methods
-
-Type: `Array`  
-Default: `[ 'GET', 'HEAD' ]`
-
-This property allows a user to pass the list of HTTP request methods accepted by the middleware\*\*.
 
 ### index
 

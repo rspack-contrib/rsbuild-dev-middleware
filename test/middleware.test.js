@@ -3460,46 +3460,6 @@ describe.each([
       });
     });
 
-    describe("methods option", () => {
-      let compiler;
-
-      beforeAll(async () => {
-        compiler = getCompiler(webpackConfig);
-
-        [server, req, instance] = await frameworkFactory(
-          name,
-          framework,
-          compiler,
-          {
-            methods: ["POST"],
-            publicPath: "/public/",
-          },
-        );
-      });
-
-      afterAll(async () => {
-        await close(server, instance);
-      });
-
-      it('should return the "200" code for the "POST" request to the bundle file', async () => {
-        const response = await req.post(`/public/bundle.js`);
-
-        expect(response.statusCode).toEqual(200);
-      });
-
-      it('should return the "404" code for the "GET" request to the bundle file', async () => {
-        const response = await req.get(`/public/bundle.js`);
-
-        expect(response.statusCode).toEqual(404);
-      });
-
-      it('should return the "200" code for the "HEAD" request to the bundle file', async () => {
-        const response = await req.head(`/public/bundle.js`);
-
-        expect(response.statusCode).toEqual(404);
-      });
-    });
-
     describe("publicPath option", () => {
       describe('should work with "string" value', () => {
         beforeAll(async () => {

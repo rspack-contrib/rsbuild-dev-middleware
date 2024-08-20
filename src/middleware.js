@@ -120,7 +120,7 @@ const parseRangeHeaders = memorize(
  */
 function wrapper(context) {
   return async function middleware(req, res, next) {
-    const acceptedMethods = context.options.methods || ["GET", "HEAD"];
+    const acceptedMethods = ["GET", "HEAD"];
 
     // fixes #282. credit @cexoso. in certain edge situations res.locals is undefined.
     // eslint-disable-next-line no-param-reassign

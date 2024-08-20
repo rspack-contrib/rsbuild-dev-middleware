@@ -76,7 +76,6 @@ export = wdm;
  * @template {ServerResponse} [ResponseInternal = ServerResponse]
  * @typedef {Object} Options
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
- * @property {string[]} [methods]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {Configuration["stats"]} [stats]
  * @property {boolean} [serverSideRender]
@@ -262,7 +261,6 @@ type Options<
   ResponseInternal extends ServerResponse = ServerResponse,
 > = {
   writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
-  methods?: string[] | undefined;
   publicPath?: NonNullable<Configuration["output"]>["publicPath"];
   stats?: Configuration["stats"];
   serverSideRender?: boolean | undefined;
