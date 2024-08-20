@@ -1,12 +1,12 @@
 {
   "name": "rsbuild-dev-middleware",
-  "version": "1.0.0-beta.1",
+  "version": "0.1.0",
   "description": "A development middleware for Rsbuild",
   "license": "MIT",
-  "repository": "webpack/webpack-dev-middleware",
+  "repository": "chenjiahan/rsbuild-dev-middleware",
   "author": "Tobias Koppers @sokra",
-  "homepage": "https://github.com/webpack/webpack-dev-middleware",
-  "bugs": "https://github.com/webpack/webpack-dev-middleware/issues",
+  "homepage": "https://github.com/chenjiahan/rsbuild-dev-middleware",
+  "bugs": "https://github.com/chenjiahan/rsbuild-dev-middleware/issues",
   "funding": {
     "type": "opencollective",
     "url": "https://opencollective.com/webpack"
