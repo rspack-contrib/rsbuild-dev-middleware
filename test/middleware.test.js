@@ -6,7 +6,6 @@ import express from "express";
 import router from "router";
 import finalhandler from "finalhandler";
 import fastify from "fastify";
-import koa from "koa";
 import request from "supertest";
 import memfs, { createFsFromVolume, Volume } from "memfs";
 import del from "del";
@@ -64,31 +63,6 @@ async function frameworkFactory(
   options = {},
 ) {
   switch (name) {
-    case "koa": {
-      // eslint-disable-next-line new-cap
-      const app = new framework();
-      const koaMiddleware = middleware.koaWrapper(
-        compiler,
-        devMiddlewareOptions,
-      );
-      const middlewares =
-        typeof options.setupMiddlewares === "function"
-          ? options.setupMiddlewares([koaMiddleware])
-          : [koaMiddleware];
-
-      for (const item of middlewares) {
-        if (item.route) {
-          app.use(item.route, item.fn);
-        } else {
-          app.use(item);
-        }
-      }
-
-      const server = await startServer(name, app);
-      const req = request(server);
-
-      return [server, req, koaMiddleware.devMiddleware];
-    }
     default: {
       const isFastify = name === "fastify";
       const isRouter = name === "router";
@@ -172,8 +146,6 @@ async function close(server, instance) {
 
 function get404ContentTypeHeader(name) {
   switch (name) {
-    case "koa":
-      return "text/plain; charset=utf-8";
     case "fastify":
       return "application/json; charset=utf-8";
     default:
@@ -182,31 +154,20 @@ function get404ContentTypeHeader(name) {
 }
 
 function applyTestMiddleware(name, middlewares) {
-  if (name === "koa") {
-    middlewares.push((ctx, next) => {
-      if (ctx.request.url === "/file.jpg") {
-        ctx.set("Content-Type", "text/html");
-        ctx.body = "welcome";
+  middlewares.push({
+    route: "/file.jpg",
+    fn: (req, res) => {
+      // Express API
+      if (res.send) {
+        res.send("welcome");
       }
-
-      next();
-    });
-  } else {
-    middlewares.push({
-      route: "/file.jpg",
-      fn: (req, res) => {
-        // Express API
-        if (res.send) {
-          res.send("welcome");
-        }
-        // Connect API
-        else {
-          res.setHeader("Content-Type", "text/html");
-          res.end("welcome");
-        }
-      },
-    });
-  }
+      // Connect API
+      else {
+        res.setHeader("Content-Type", "text/html");
+        res.end("welcome");
+      }
+    },
+  });
 
   return middlewares;
 }
@@ -223,7 +184,6 @@ describe.each([
   ["express", express],
   ["router", router],
   ["fastify", fastify],
-  ["koa", koa],
 ])("%s framework:", (name, framework) => {
   describe("middleware", () => {
     let instance;
@@ -1754,35 +1714,24 @@ describe.each([
             undefined,
             {
               setupMiddlewares: (middlewares) => {
-                if (name === "koa") {
-                  middlewares.unshift(async (ctx, next) => {
-                    ctx.set(
+                middlewares.unshift((req, res, next) => {
+                  // Express API
+                  if (res.set) {
+                    res.set(
                       "Content-Type",
                       "application/vnd.test+octet-stream",
                     );
+                  }
+                  // Connect API
+                  else {
+                    res.setHeader(
+                      "Content-Type",
+                      "application/vnd.test+octet-stream",
+                    );
+                  }
 
-                    await next();
-                  });
-                } else {
-                  middlewares.unshift((req, res, next) => {
-                    // Express API
-                    if (res.set) {
-                      res.set(
-                        "Content-Type",
-                        "application/vnd.test+octet-stream",
-                      );
-                    }
-                    // Connect API
-                    else {
-                      res.setHeader(
-                        "Content-Type",
-                        "application/vnd.test+octet-stream",
-                      );
-                    }
-
-                    next();
-                  });
-                }
+                  next();
+                });
 
                 return middlewares;
               },
@@ -4084,32 +4033,21 @@ describe.each([
           { serverSideRender: true },
           {
             setupMiddlewares: (middlewares) => {
-              if (name === "koa") {
-                middlewares.push(async (ctx, next) => {
-                  locals = ctx.state;
+              middlewares.push((_req, res) => {
+                // eslint-disable-next-line prefer-destructuring
+                locals = res.locals;
 
-                  ctx.status = 200;
-
-                  await next();
-                });
-              } else {
-                middlewares.push((_req, res) => {
-                  // eslint-disable-next-line prefer-destructuring
-                  locals = res.locals;
-
-                  // Express API
-                  if (res.sendStatus) {
-                    res.sendStatus(200);
-                  }
-                  // Connect API
-                  else {
-                    // eslint-disable-next-line no-param-reassign
-                    res.statusCode = 200;
-                    res.end();
-                  }
-                });
-              }
-
+                // Express API
+                if (res.sendStatus) {
+                  res.sendStatus(200);
+                }
+                // Connect API
+                else {
+                  // eslint-disable-next-line no-param-reassign
+                  res.statusCode = 200;
+                  res.end();
+                }
+              });
               return middlewares;
             },
           },
