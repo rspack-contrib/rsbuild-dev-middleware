@@ -77,7 +77,6 @@ export = wdm;
  * @typedef {Object} Options
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
- * @property {boolean} [serverSideRender]
  * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
  * @property {"weak" | "strong"} [etag]
@@ -261,7 +260,6 @@ type Options<
 > = {
   writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
   publicPath?: NonNullable<Configuration["output"]>["publicPath"];
-  serverSideRender?: boolean | undefined;
   outputFileSystem?: OutputFileSystem | undefined;
   index?: string | boolean | undefined;
   etag?: "strong" | "weak" | undefined;

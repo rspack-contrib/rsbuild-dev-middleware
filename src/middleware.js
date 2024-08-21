@@ -148,10 +148,6 @@ function wrapper(context) {
     res.locals = res.locals || {};
 
     async function goNext() {
-      if (!context.options.serverSideRender) {
-        return next();
-      }
-
       return new Promise((resolve) => {
         ready(
           context,

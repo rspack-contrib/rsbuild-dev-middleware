@@ -81,9 +81,7 @@ async function frameworkFactory(
       }
 
       const server = await startServer(name, app);
-      const req = isRouter
-          ? request(server)
-          : request(app);
+      const req = isRouter ? request(server) : request(app);
 
       return [server, req, instance];
     }
@@ -3480,7 +3478,7 @@ describe.each([
       });
     });
 
-    describe("serverSideRender option", () => {
+    describe("res.locals.webpack.devMiddleware", () => {
       let locals;
 
       beforeAll(async () => {
@@ -3490,7 +3488,7 @@ describe.each([
           name,
           framework,
           compiler,
-          { serverSideRender: true },
+          {},
           {
             setupMiddlewares: (middlewares) => {
               middlewares.push((_req, res) => {
