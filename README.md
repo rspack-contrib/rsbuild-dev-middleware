@@ -63,7 +63,6 @@ app.listen(3000, () => console.log("Example app listening on port 3000!"));
 |              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
 |         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
 |        **[`writeToDisk`](#writetodisk)**        |      `Boolean\|Function`      |                    `false`                    | Instructs the module to write files to the configured location on disk as specified in your `webpack` configuration. |
-|   **[`outputFileSystem`](#outputfilesystem)**   |           `Object`            | [`memfs`](https://github.com/streamich/memfs) | Set the default file system which will be used by webpack as primary destination of generated files.                 |
 
 The middleware accepts an `options` Object. The following is a property reference for the Object.
 
@@ -114,34 +113,6 @@ middleware(compiler, {
     return /superman\.css$/.test(filePath);
   },
 });
-```
-
-### outputFileSystem
-
-Type: `Object`  
-Default: [memfs](https://github.com/streamich/memfs)
-
-Set the default file system which will be used by webpack as primary destination of generated files.
-This option isn't affected by the [writeToDisk](#writeToDisk) option.
-
-You have to provide `.join()` and `mkdirp` method to the `outputFileSystem` instance manually for compatibility with `webpack@4`.
-
-This can be done simply by using `path.join`:
-
-```js
-const webpack = require("webpack");
-const path = require("path");
-const myOutputFileSystem = require("my-fs");
-const mkdirp = require("mkdirp");
-
-myOutputFileSystem.join = path.join.bind(path); // no need to bind
-myOutputFileSystem.mkdirp = mkdirp.bind(mkdirp); // no need to bind
-
-const compiler = webpack({
-  /* Webpack configuration */
-});
-
-middleware(compiler, { outputFileSystem: myOutputFileSystem });
 ```
 
 ## API
@@ -309,78 +280,6 @@ app.use(
 );
 
 app.listen(3000, () => console.log("Example app listening on port 3000!"));
-```
-
-## Server-Side Rendering
-
-_Note: this feature is experimental and may be removed or changed completely in the future._
-
-In order to develop an app using server-side rendering, we need access to the
-[`stats`](https://github.com/webpack/docs/wiki/node.js-api#stats), which is
-generated with each build.
-
-With server-side rendering enabled, `webpack-dev-middleware` sets the `stats` to `res.locals.webpack.devMiddleware.stats`
-and the filesystem to `res.locals.webpack.devMiddleware.outputFileSystem` before invoking the next middleware,
-allowing a developer to render the page body and manage the response to clients.
-
-_Note: Requests for bundle files will still be handled by
-`webpack-dev-middleware` and all requests will be pending until the build
-process is finished with server-side rendering enabled._
-
-Example Implementation:
-
-```js
-const express = require("express");
-const webpack = require("webpack");
-const compiler = webpack({
-  /* Webpack configuration */
-});
-const isObject = require("is-object");
-const middleware = require("webpack-dev-middleware");
-
-const app = new express();
-
-// This function makes server rendering of asset references consistent with different webpack chunk/entry configurations
-function normalizeAssets(assets) {
-  if (isObject(assets)) {
-    return Object.values(assets);
-  }
-
-  return Array.isArray(assets) ? assets : [assets];
-}
-
-app.use(middleware(compiler));
-
-// The following middleware would not be invoked until the latest build is finished.
-app.use((req, res) => {
-  const { devMiddleware } = res.locals.webpack;
-  const outputFileSystem = devMiddleware.outputFileSystem;
-  const jsonWebpackStats = devMiddleware.stats.toJson();
-  const { assetsByChunkName, outputPath } = jsonWebpackStats;
-
-  // Then use `assetsByChunkName` for server-side rendering
-  // For example, if you have only one main chunk:
-  res.send(`
-<html>
-  <head>
-    <title>My App</title>
-    <style>
-    ${normalizeAssets(assetsByChunkName.main)
-      .filter((path) => path.endsWith(".css"))
-      .map((path) => outputFileSystem.readFileSync(path.join(outputPath, path)))
-      .join("\n")}
-    </style>
-  </head>
-  <body>
-    <div id="root"></div>
-    ${normalizeAssets(assetsByChunkName.main)
-      .filter((path) => path.endsWith(".js"))
-      .map((path) => `<script src="${path}"></script>`)
-      .join("\n")}
-  </body>
-</html>
-  `);
-});
 ```
 
 ## Support

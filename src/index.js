@@ -102,7 +102,6 @@ const noop = () => {};
  * @typedef {Object} Options
  * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
- * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
  * @property {boolean} [lastModified]
  */

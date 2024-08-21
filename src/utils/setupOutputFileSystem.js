@@ -12,13 +12,8 @@ const memfs = require("memfs");
 function setupOutputFileSystem(context) {
   let outputFileSystem;
 
-  if (context.options.outputFileSystem) {
-    const { outputFileSystem: outputFileSystemFromOptions } = context.options;
-
-    outputFileSystem = outputFileSystemFromOptions;
-  }
   // Don't use `memfs` when developer wants to write everything to a disk, because it doesn't make sense.
-  else if (context.options.writeToDisk !== true) {
+  if (context.options.writeToDisk !== true) {
     outputFileSystem = memfs.createFsFromVolume(new memfs.Volume());
   } else {
     const isMultiCompiler =

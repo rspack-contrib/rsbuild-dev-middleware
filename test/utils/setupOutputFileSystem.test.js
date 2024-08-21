@@ -43,20 +43,4 @@ describe("setupOutputFileSystem", () => {
       expect(comp.outputFileSystem).toBeTruthy();
     });
   });
-
-  it("should use provided fs with correct methods", () => {
-    const context = {
-      compiler: {},
-      options: {
-        outputFileSystem: {
-          join: () => {},
-          mkdirp: () => {},
-        },
-      },
-    };
-
-    setupOutputFileSystem(context);
-
-    expect(context.outputFileSystem).toEqual(context.options.outputFileSystem);
-  });
 });
