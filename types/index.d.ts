@@ -79,7 +79,6 @@ export = wdm;
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
- * @property {"weak" | "strong"} [etag]
  * @property {boolean} [lastModified]
  */
 /**
@@ -262,7 +261,6 @@ type Options<
   publicPath?: NonNullable<Configuration["output"]>["publicPath"];
   outputFileSystem?: OutputFileSystem | undefined;
   index?: string | boolean | undefined;
-  etag?: "strong" | "weak" | undefined;
   lastModified?: boolean | undefined;
 };
 type Middleware<

@@ -19,6 +19,7 @@ declare function wrapper<
 ): import("./index.js").Middleware<Request, Response>;
 declare namespace wrapper {
   export {
+    Stats,
     SendErrorOptions,
     NextFunction,
     IncomingMessage,
@@ -27,6 +28,7 @@ declare namespace wrapper {
     ReadStream,
   };
 }
+type Stats = import("fs").Stats;
 /**
  * send error options
  */

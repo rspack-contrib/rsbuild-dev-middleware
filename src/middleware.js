@@ -15,6 +15,21 @@ const ready = require("./utils/ready");
 const parseTokenList = require("./utils/parseTokenList");
 const memorize = require("./utils/memorize");
 
+/** @typedef {import("fs").Stats} Stats */
+
+/**
+ * Create a simple ETag.
+ *
+ * @param {Stats} stat
+ * @return {Promise<{ hash: string, buffer?: Buffer }>}
+ */
+async function etag(stat) {
+  const mtime = stat.mtime.getTime().toString(16);
+  const size = stat.size.toString(16);
+
+  return { hash: `W/"${size}-${mtime}"` };
+}
+
 /**
  * Create a full Content-Type header given a MIME type or extension.
  *
@@ -499,48 +514,11 @@ function wrapper(context) {
 
       const rangeHeader = getRangeHeader();
 
-      if (context.options.etag && !res.getHeader("ETag")) {
-        /** @type {import("fs").Stats | Buffer | ReadStream | undefined} */
-        let value;
-
-        // TODO cache etag generation?
-        if (context.options.etag === "weak") {
-          value = /** @type {import("fs").Stats} */ (extra.stats);
-        } else {
-          if (rangeHeader) {
-            const parsedRanges =
-              /** @type {import("range-parser").Ranges | import("range-parser").Result} */
-              (parseRangeHeaders(`${size}|${rangeHeader}`));
-
-            if (
-              parsedRanges !== -2 &&
-              parsedRanges !== -1 &&
-              parsedRanges.length === 1
-            ) {
-              [offset, len] = getOffsetAndLenFromRange(parsedRanges[0]);
-            }
-          }
-
-          [start, end] = calcStartAndEnd(offset, len);
-
-          try {
-            const result = createReadStreamOrReadFileSync(
-              filename,
-              context.outputFileSystem,
-              start,
-              end,
-            );
-
-            value = result.bufferOrStream;
-            ({ bufferOrStream, byteLength } = result);
-          } catch (_err) {
-            // Ignore here
-          }
-        }
+      if (!res.getHeader("ETag")) {
+        const value = /** @type {import("fs").Stats} */ (extra.stats);
 
         if (value) {
-          // eslint-disable-next-line global-require
-          const result = await require("./utils/etag")(value);
+          const result = await etag(value);
 
           // Because we already read stream, we can cache buffer to avoid extra read from fs
           if (result.buffer) {

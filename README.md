@@ -61,7 +61,6 @@ app.listen(3000, () => console.log("Example app listening on port 3000!"));
 |                      Name                       |             Type              |                    Default                    | Description                                                                                                          |
 | :---------------------------------------------: | :---------------------------: | :-------------------------------------------: | :------------------------------------------------------------------------------------------------------------------- |
 |              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
-|               **[`etag`](#tag)**                | `boolean\| "weak"\| "strong"` |                  `undefined`                  | Enable or disable etag generation.                                                                                   |
 |         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
 |        **[`writeToDisk`](#writetodisk)**        |      `Boolean\|Function`      |                    `false`                    | Instructs the module to write files to the configured location on disk as specified in your `webpack` configuration. |
 |   **[`outputFileSystem`](#outputfilesystem)**   |           `Object`            | [`memfs`](https://github.com/streamich/memfs) | Set the default file system which will be used by webpack as primary destination of generated files.                 |
@@ -74,13 +73,6 @@ Type: `Boolean|String`
 Default: `index.html`
 
 If `false` (but not `undefined`), the server will not respond to requests to the root URL.
-
-### etag
-
-Type: `"weak" | "strong"`  
-Default: `undefined`
-
-Enable or disable etag generation. Boolean value use
 
 ### lastModified
 

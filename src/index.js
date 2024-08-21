@@ -104,7 +104,6 @@ const noop = () => {};
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {OutputFileSystem} [outputFileSystem]
  * @property {boolean | string} [index]
- * @property {"weak" | "strong"} [etag]
  * @property {boolean} [lastModified]
  */
 
