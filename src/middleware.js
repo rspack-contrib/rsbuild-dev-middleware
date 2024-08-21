@@ -3,12 +3,6 @@ const mrmime = require("mrmime");
 const onFinishedStream = require("on-finished");
 
 const getFilenameFromUrl = require("./utils/getFilenameFromUrl");
-const {
-  setStatusCode,
-  send,
-  pipe,
-  createReadStreamOrReadFileSync,
-} = require("./utils/compatibleAPI");
 const ready = require("./utils/ready");
 const parseTokenList = require("./utils/parseTokenList");
 const memorize = require("./utils/memorize");
@@ -26,6 +20,38 @@ async function getEtag(stat) {
   const size = stat.size.toString(16);
 
   return `W/"${size}-${mtime}"`;
+}
+
+/**
+ * @typedef {Object} ExpectedResponse
+ * @property {(status: number) => void} [status]
+ * @property {(data: any) => void} [send]
+ * @property {(data: any) => void} [pipeInto]
+ */
+
+/**
+ * @param {string} filename
+ * @param {import("./index").OutputFileSystem} outputFileSystem
+ * @param {number} start
+ * @param {number} end
+ * @returns {{ bufferOrStream: (Buffer | import("fs").ReadStream), byteLength: number }}
+ */
+function createReadStreamOrReadFileSync(
+  filename,
+  outputFileSystem,
+  start,
+  end,
+) {
+  const bufferOrStream =
+    /** @type {import("fs").createReadStream} */
+    (outputFileSystem.createReadStream)(filename, {
+      start,
+      end,
+    });
+  // Handle files with zero bytes
+  const byteLength = end === 0 ? 0 : end - start + 1;
+
+  return { bufferOrStream, byteLength };
 }
 
 /**
@@ -226,7 +252,7 @@ function wrapper(context) {
       }
 
       // Send basic response
-      setStatusCode(res, status);
+      res.statusCode = status;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.setHeader("Content-Security-Policy", "default-src 'none'");
       res.setHeader("X-Content-Type-Options", "nosniff");
@@ -520,7 +546,7 @@ function wrapper(context) {
 
         // For Koa
         if (res.statusCode === 404) {
-          setStatusCode(res, 200);
+          res.statusCode = 200;
         }
 
         if (
@@ -532,7 +558,7 @@ function wrapper(context) {
               (res.getHeader("Last-Modified")),
           })
         ) {
-          setStatusCode(res, 304);
+          res.statusCode = 304;
 
           // Remove content header fields
           res.removeHeader("Content-Encoding");
@@ -583,7 +609,7 @@ function wrapper(context) {
 
         if (parsedRanges !== -2 && parsedRanges.length === 1) {
           // Content-Range
-          setStatusCode(res, 206);
+          res.statusCode = 206;
           res.setHeader(
             "Content-Range",
             getValueContentRangeHeader(
@@ -622,7 +648,7 @@ function wrapper(context) {
       if (req.method === "HEAD") {
         // For Koa
         if (res.statusCode === 404) {
-          setStatusCode(res, 200);
+          res.statusCode = 200;
         }
 
         res.end();
@@ -635,7 +661,7 @@ function wrapper(context) {
         ) === "function";
 
       if (!isPipeSupports) {
-        send(res, /** @type {Buffer} */ (bufferOrStream));
+        res.end(/** @type {Buffer} */ (bufferOrStream));
         return;
       }
 
@@ -666,7 +692,7 @@ function wrapper(context) {
         }
       });
 
-      pipe(res, /** @type {ReadStream} */ (bufferOrStream));
+      /** @type {ReadStream} */ (bufferOrStream).pipe(res);
 
       // Response finished, cleanup
       onFinishedStream(res, cleanup);

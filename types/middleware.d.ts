@@ -20,6 +20,7 @@ declare function wrapper<
 declare namespace wrapper {
   export {
     Stats,
+    ExpectedResponse,
     SendErrorOptions,
     NextFunction,
     IncomingMessage,
@@ -29,6 +30,11 @@ declare namespace wrapper {
   };
 }
 type Stats = import("fs").Stats;
+type ExpectedResponse = {
+  status?: ((status: number) => void) | undefined;
+  send?: ((data: any) => void) | undefined;
+  pipeInto?: ((data: any) => void) | undefined;
+};
 /**
  * send error options
  */
