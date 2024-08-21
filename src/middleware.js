@@ -1,5 +1,3 @@
-const path = require("path");
-
 const mrmime = require("mrmime");
 
 const onFinishedStream = require("on-finished");
@@ -21,13 +19,13 @@ const memorize = require("./utils/memorize");
  * Create a simple ETag.
  *
  * @param {Stats} stat
- * @return {Promise<{ hash: string, buffer?: Buffer }>}
+ * @return {Promise<string>}
  */
-async function etag(stat) {
+async function getEtag(stat) {
   const mtime = stat.mtime.getTime().toString(16);
   const size = stat.size.toString(16);
 
-  return { hash: `W/"${size}-${mtime}"` };
+  return `W/"${size}-${mtime}"`;
 }
 
 /**
@@ -481,7 +479,7 @@ function wrapper(context) {
 
       if (!res.getHeader("Content-Type")) {
         // content-type name(like text/javascript; charset=utf-8) or false
-        const contentType = getContentType(path.extname(filename));
+        const contentType = getContentType(filename);
 
         // Only set content-type header if media type is known
         // https://tools.ietf.org/html/rfc7231#section-3.1.1.5
@@ -502,30 +500,13 @@ function wrapper(context) {
         res.setHeader("Last-Modified", modified);
       }
 
-      /** @type {number} */
-      let start;
-      /** @type {number} */
-      let end;
-
-      /** @type {undefined | Buffer | ReadStream} */
-      let bufferOrStream;
-      /** @type {number} */
-      let byteLength;
-
       const rangeHeader = getRangeHeader();
 
       if (!res.getHeader("ETag")) {
         const value = /** @type {import("fs").Stats} */ (extra.stats);
-
         if (value) {
-          const result = await etag(value);
-
-          // Because we already read stream, we can cache buffer to avoid extra read from fs
-          if (result.buffer) {
-            bufferOrStream = result.buffer;
-          }
-
-          res.setHeader("ETag", result.hash);
+          const hash = await getEtag(value);
+          res.setHeader("ETag", hash);
         }
       }
 
@@ -616,22 +597,23 @@ function wrapper(context) {
         }
       }
 
-      // When strong Etag generation is enabled we already read file, so we can skip extra fs call
-      if (!bufferOrStream) {
-        [start, end] = calcStartAndEnd(offset, len);
+      /** @type {undefined | Buffer | ReadStream} */
+      let bufferOrStream;
+      /** @type {number} */
+      let byteLength;
 
-        try {
-          ({ bufferOrStream, byteLength } = createReadStreamOrReadFileSync(
-            filename,
-            context.outputFileSystem,
-            start,
-            end,
-          ));
-        } catch (_ignoreError) {
-          await goNext();
+      const [start, end] = calcStartAndEnd(offset, len);
 
-          return;
-        }
+      try {
+        ({ bufferOrStream, byteLength } = createReadStreamOrReadFileSync(
+          filename,
+          context.outputFileSystem,
+          start,
+          end,
+        ));
+      } catch (_ignoreError) {
+        await goNext();
+        return;
       }
 
       // @ts-ignore
