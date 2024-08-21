@@ -7,7 +7,6 @@
     "fullhash",
     "execa",
     "deepmerge",
-    "fastify",
     "contextify",
     "middie",
     "cexoso",

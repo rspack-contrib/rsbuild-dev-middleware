@@ -5,7 +5,6 @@ import connect from "connect";
 import express from "express";
 import router from "router";
 import finalhandler from "finalhandler";
-import fastify from "fastify";
 import request from "supertest";
 import memfs, { createFsFromVolume, Volume } from "memfs";
 import del from "del";
@@ -64,14 +63,8 @@ async function frameworkFactory(
 ) {
   switch (name) {
     default: {
-      const isFastify = name === "fastify";
       const isRouter = name === "router";
       const app = framework();
-
-      if (isFastify) {
-        // eslint-disable-next-line global-require
-        await app.register(require("@fastify/express"));
-      }
 
       const instance = middleware(compiler, devMiddlewareOptions);
       const middlewares =
@@ -87,18 +80,12 @@ async function frameworkFactory(
         }
       }
 
-      if (isFastify) {
-        await app.ready();
-      }
-
       const server = await startServer(name, app);
-      const req = isFastify
-        ? request(app.server)
-        : isRouter
+      const req = isRouter
           ? request(server)
           : request(app);
 
-      return [isFastify ? app.server : server, req, instance];
+      return [server, req, instance];
     }
   }
 }
@@ -146,8 +133,6 @@ async function close(server, instance) {
 
 function get404ContentTypeHeader(name) {
   switch (name) {
-    case "fastify":
-      return "application/json; charset=utf-8";
     default:
       return "text/html; charset=utf-8";
   }
@@ -164,7 +149,6 @@ describe.each([
   ["connect", connect],
   ["express", express],
   ["router", router],
-  ["fastify", fastify],
 ])("%s framework:", (name, framework) => {
   describe("middleware", () => {
     let instance;
@@ -1388,13 +1372,12 @@ describe.each([
             ],
           },
           {
-            // fastify uses the `frameworkErrors` option to handle broken URLs
-            file: name === "fastify" ? "/foo/foo.js" : "/%foo%/%foo%.js",
+            file: "/%foo%/%foo%.js",
             data: 'console.log("foo");',
             urls: [
               // Filenames can contain characters not allowed in URIs
               {
-                value: name === "fastify" ? "foo/foo.js" : "%foo%/%foo%.js",
+                value: "%foo%/%foo%.js",
                 contentType: "text/javascript; charset=utf-8",
                 code: 200,
               },
