@@ -1,29 +1,28 @@
-const fs = require("fs");
-const path = require("path");
+import fs from "fs";
+import path from "path";
+import { Compiler, MultiCompiler } from "webpack";
+import {
+  IncomingMessage,
+  ServerResponse,
+  WithOptional,
+  Context,
+} from "../index";
 
-/** @typedef {import("webpack").Compiler} Compiler */
-/** @typedef {import("webpack").MultiCompiler} MultiCompiler */
-/** @typedef {import("webpack").Compilation} Compilation */
-/** @typedef {import("../index.js").IncomingMessage} IncomingMessage */
-/** @typedef {import("../index.js").ServerResponse} ServerResponse */
-
-/**
- * @template {IncomingMessage} Request
- * @template {ServerResponse} Response
- * @param {import("../index.js").WithOptional<import("../index.js").Context<Request, Response>, "watching" | "outputFileSystem">} context
- */
-function setupWriteToDisk(context) {
-  /**
-   * @type {Compiler[]}
-   */
-  const compilers =
-    /** @type {MultiCompiler} */
-    (context.compiler).compilers || [context.compiler];
+export function setupWriteToDisk<
+  Request extends IncomingMessage,
+  Response extends ServerResponse,
+>(
+  context: WithOptional<
+    Context<Request, Response>,
+    "watching" | "outputFileSystem"
+  >,
+): void {
+  const compilers: Compiler[] = (context.compiler as MultiCompiler)
+    .compilers || [context.compiler as Compiler];
 
   for (const compiler of compilers) {
     compiler.hooks.emit.tap("DevMiddleware", () => {
-      // @ts-ignore
-      if (compiler.hasWebpackDevMiddlewareAssetEmittedCallback) {
+      if ((compiler as any).hasWebpackDevMiddlewareAssetEmittedCallback) {
         return;
       }
 
@@ -49,7 +48,6 @@ function setupWriteToDisk(context) {
               context.logger.error(
                 `${name}Unable to write "${dir}" directory to disk:\n${mkdirError}`,
               );
-
               return callback(mkdirError);
             }
 
@@ -58,24 +56,19 @@ function setupWriteToDisk(context) {
                 context.logger.error(
                   `${name}Unable to write "${targetPath}" asset to disk:\n${writeFileError}`,
                 );
-
                 return callback(writeFileError);
               }
 
               context.logger.log(
                 `${name}Asset written to disk: "${targetPath}"`,
               );
-
               return callback();
             });
           });
         },
       );
 
-      // @ts-ignore
-      compiler.hasWebpackDevMiddlewareAssetEmittedCallback = true;
+      (compiler as any).hasWebpackDevMiddlewareAssetEmittedCallback = true;
     });
   }
 }
-
-module.exports = setupWriteToDisk;

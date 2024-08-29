@@ -4,7 +4,7 @@ const matchHtmlRegExp = /["'&<>]/;
  * @param {string} string raw HTML
  * @returns {string} escaped HTML
  */
-function escapeHtml(string) {
+export function escapeHtml(string: string): string {
   const str = `${string}`;
   const match = matchHtmlRegExp.exec(str);
 
@@ -12,7 +12,7 @@ function escapeHtml(string) {
     return str;
   }
 
-  let escape;
+  let escape: string;
   let html = "";
   let index = 0;
   let lastIndex = 0;
@@ -54,5 +54,3 @@ function escapeHtml(string) {
 
   return lastIndex !== index ? html + str.substring(lastIndex, index) : html;
 }
-
-module.exports = escapeHtml;
