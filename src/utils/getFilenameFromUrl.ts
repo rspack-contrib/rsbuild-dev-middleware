@@ -1,28 +1,30 @@
-const path = require("path");
-const { parse } = require("url");
-const querystring = require("querystring");
-
-const getPaths = require("./getPaths");
-const memorize = require("./memorize");
-
-/** @typedef {import("../index.js").IncomingMessage} IncomingMessage */
-/** @typedef {import("../index.js").ServerResponse} ServerResponse */
+import path from "path";
+import { parse, UrlWithStringQuery } from "url";
+import querystring from "querystring";
+import { getPaths } from "./getPaths";
+import { memorize } from "./memorize";
+import { IncomingMessage, ServerResponse, FilledContext } from "../index";
+import { Stats } from "fs";
 
 // eslint-disable-next-line no-undefined
-const memoizedParse = memorize(parse, undefined, (value) => {
-  if (value.pathname) {
-    // eslint-disable-next-line no-param-reassign
-    value.pathname = decode(value.pathname);
-  }
+const memoizedParse = memorize(
+  parse,
+  undefined,
+  (value: UrlWithStringQuery) => {
+    if (value.pathname) {
+      // eslint-disable-next-line no-param-reassign
+      value.pathname = decode(value.pathname);
+    }
 
-  return value;
-});
+    return value;
+  },
+);
 
 const UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
 
 /**
  * @typedef {Object} Extra
- * @property {import("fs").Stats=} stats
+ * @property {Stats=} stats
  * @property {number=} errorCode
  */
 
@@ -35,28 +37,27 @@ const UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
  * @returns {string}
  */
 
-function decode(input) {
+function decode(input: string): string {
   return querystring.unescape(input);
 }
 
+export type Extra = { stats?: Stats; errorCode?: number };
+
 // TODO refactor me in the next major release, this function should return `{ filename, stats, error }`
 // TODO fix redirect logic when `/` at the end, like https://github.com/pillarjs/send/blob/master/index.js#L586
-/**
- * @template {IncomingMessage} Request
- * @template {ServerResponse} Response
- * @param {import("../index.js").FilledContext<Request, Response>} context
- * @param {string} url
- * @param {Extra=} extra
- * @returns {string | undefined}
- */
-function getFilenameFromUrl(context, url, extra = {}) {
+export function getFilenameFromUrl<
+  Request extends IncomingMessage,
+  Response extends ServerResponse,
+>(
+  context: FilledContext<Request, Response>,
+  url: string,
+  extra: Extra = {},
+): string | undefined {
   const { options } = context;
   const paths = getPaths(context);
 
-  /** @type {string | undefined} */
-  let foundFilename;
-  /** @type {URL} */
-  let urlObject;
+  let foundFilename: string | undefined;
+  let urlObject: UrlWithStringQuery;
 
   try {
     // The `url` property of the `request` is contains only  `pathname`, `search` and `hash`
@@ -66,10 +67,8 @@ function getFilenameFromUrl(context, url, extra = {}) {
   }
 
   for (const { publicPath, outputPath } of paths) {
-    /** @type {string | undefined} */
-    let filename;
-    /** @type {URL} */
-    let publicPathObject;
+    let filename: string | undefined;
+    let publicPathObject: UrlWithStringQuery;
 
     try {
       publicPathObject = memoizedParse(
@@ -85,7 +84,11 @@ function getFilenameFromUrl(context, url, extra = {}) {
     const { pathname } = urlObject;
     const { pathname: publicPathPathname } = publicPathObject;
 
-    if (pathname && pathname.startsWith(publicPathPathname)) {
+    if (
+      pathname &&
+      publicPathPathname &&
+      pathname.startsWith(publicPathPathname)
+    ) {
       // Null byte(s)
       if (pathname.includes("\0")) {
         // eslint-disable-next-line no-param-reassign
@@ -112,10 +115,7 @@ function getFilenameFromUrl(context, url, extra = {}) {
       );
 
       try {
-        // eslint-disable-next-line no-param-reassign
-        extra.stats =
-          /** @type {import("fs").statSync} */
-          (context.outputFileSystem.statSync)(filename);
+        extra.stats = context.outputFileSystem.statSync?.(filename) as Stats;
       } catch (_ignoreError) {
         // eslint-disable-next-line no-continue
         continue;
@@ -123,7 +123,6 @@ function getFilenameFromUrl(context, url, extra = {}) {
 
       if (extra.stats.isFile()) {
         foundFilename = filename;
-
         break;
       } else if (
         extra.stats.isDirectory() &&
@@ -138,9 +137,7 @@ function getFilenameFromUrl(context, url, extra = {}) {
         filename = path.join(filename, indexValue);
 
         try {
-          extra.stats =
-            /** @type {import("fs").statSync} */
-            (context.outputFileSystem.statSync)(filename);
+          extra.stats = context.outputFileSystem.statSync?.(filename) as Stats;
         } catch (__ignoreError) {
           // eslint-disable-next-line no-continue
           continue;
@@ -148,7 +145,6 @@ function getFilenameFromUrl(context, url, extra = {}) {
 
         if (extra.stats.isFile()) {
           foundFilename = filename;
-
           break;
         }
       }
@@ -158,5 +154,3 @@ function getFilenameFromUrl(context, url, extra = {}) {
   // eslint-disable-next-line consistent-return
   return foundFilename;
 }
-
-module.exports = getFilenameFromUrl;

@@ -1,14 +1,11 @@
 /**
  * Parse a HTTP token list.
- *
- * @param {string} str
- * @returns {string[]} tokens
  */
-function parseTokenList(str) {
+export function parseTokenList(str: string): string[] {
   let end = 0;
   let start = 0;
 
-  const list = [];
+  const list: string[] = [];
 
   // gather tokens
   for (let i = 0, len = str.length; i < len; i++) {
@@ -39,5 +36,3 @@ function parseTokenList(str) {
 
   return list;
 }
-
-module.exports = parseTokenList;
