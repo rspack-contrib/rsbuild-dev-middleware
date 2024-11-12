@@ -70,7 +70,7 @@ function getContentType(str) {
     mime === "application/json" ||
     mime === "application/manifest+json"
   ) {
-    mime += `; charset=utf-8`;
+    mime += "; charset=utf-8";
   }
   return mime;
 }
