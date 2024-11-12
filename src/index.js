@@ -100,7 +100,7 @@ const noop = () => {};
  * @template {IncomingMessage} [RequestInternal = IncomingMessage]
  * @template {ServerResponse} [ResponseInternal = ServerResponse]
  * @typedef {Object} Options
- * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
+ * @property {boolean | ((targetPath: string, compilationName?: string) => boolean)} [writeToDisk]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {boolean | string} [index]
  * @property {boolean} [lastModified]
