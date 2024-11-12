@@ -21,7 +21,8 @@
     "etag",
     "cachable",
     "finalhandler",
-    "mrmime"
+    "mrmime",
+    "corepack"
   ],
   "ignorePaths": [
     "CHANGELOG.md",
