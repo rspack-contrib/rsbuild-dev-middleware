@@ -33,7 +33,9 @@ function setupWriteToDisk(context) {
           const { targetPath, content, compilation } = info;
           const { writeToDisk: filter } = context.options;
           const allowWrite =
-            filter && typeof filter === "function" ? filter(targetPath, compilation.name) : true;
+            filter && typeof filter === "function"
+              ? filter(targetPath, compilation.name)
+              : true;
 
           if (!allowWrite) {
             return callback();
