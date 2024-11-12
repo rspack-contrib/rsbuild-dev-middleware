@@ -103,7 +103,7 @@ function parseHttpDate(date) {
   const timestamp = date && Date.parse(date);
 
   // istanbul ignore next: guard against date.js Date.parse patching
-  return typeof timestamp === "number" ? timestamp : NaN;
+  return typeof timestamp === "number" ? timestamp : Number.NaN;
 }
 
 const CACHE_CONTROL_NO_CACHE_REGEXP = /(?:^|,)\s*?no-cache\s*?(?:,|$)/;
@@ -252,6 +252,7 @@ function wrapper(context) {
       }
 
       // Send basic response
+      // eslint-disable-next-line no-param-reassign
       res.statusCode = status;
       res.setHeader("Content-Type", "text/html; charset=utf-8");
       res.setHeader("Content-Security-Policy", "default-src 'none'");
@@ -305,12 +306,12 @@ function wrapper(context) {
 
         // A recipient MUST ignore the If-Unmodified-Since header field if the
         // received field-value is not a valid HTTP-date.
-        if (!isNaN(unmodifiedSince)) {
+        if (!Number.isNaN(unmodifiedSince)) {
           const lastModified = parseHttpDate(
             /** @type {string} */ (res.getHeader("Last-Modified")),
           );
 
-          return isNaN(lastModified) || lastModified > unmodifiedSince;
+          return Number.isNaN(lastModified) || lastModified > unmodifiedSince;
         }
       }
 
@@ -546,6 +547,7 @@ function wrapper(context) {
 
         // For Koa
         if (res.statusCode === 404) {
+          // eslint-disable-next-line no-param-reassign
           res.statusCode = 200;
         }
 
@@ -558,6 +560,7 @@ function wrapper(context) {
               (res.getHeader("Last-Modified")),
           })
         ) {
+          // eslint-disable-next-line no-param-reassign
           res.statusCode = 304;
 
           // Remove content header fields
@@ -597,7 +600,8 @@ function wrapper(context) {
           });
 
           return;
-        } else if (parsedRanges === -2) {
+        }
+        if (parsedRanges === -2) {
           context.logger.error(
             "A malformed 'Range' header was provided. A regular response will be sent for this request.",
           );
@@ -609,6 +613,7 @@ function wrapper(context) {
 
         if (parsedRanges !== -2 && parsedRanges.length === 1) {
           // Content-Range
+          // eslint-disable-next-line no-param-reassign
           res.statusCode = 206;
           res.setHeader(
             "Content-Range",
@@ -648,6 +653,7 @@ function wrapper(context) {
       if (req.method === "HEAD") {
         // For Koa
         if (res.statusCode === 404) {
+          // eslint-disable-next-line no-param-reassign
           res.statusCode = 200;
         }
 

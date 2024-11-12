@@ -1664,7 +1664,7 @@ describe.each([
             undefined,
             {
               setupMiddlewares: (middlewares) => {
-                middlewares.unshift((req, res, next) => {
+                middlewares.unshift((_req, res, next) => {
                   // Express API
                   if (res.set) {
                     res.set(
