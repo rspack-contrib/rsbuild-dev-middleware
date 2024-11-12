@@ -20,7 +20,9 @@
     "deoptimize",
     "etag",
     "cachable",
-    "finalhandler"
+    "finalhandler",
+    "mrmime",
+    "corepack"
   ],
   "ignorePaths": [
     "CHANGELOG.md",
@@ -28,6 +30,7 @@
     "dist/**",
     "**/__snapshots__/**",
     "package-lock.json",
+    "pnpm-lock.yaml",
     "node_modules",
     "coverage",
     "*.log",

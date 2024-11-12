@@ -58,11 +58,11 @@ app.listen(3000, () => console.log("Example app listening on port 3000!"));
 
 ## Options
 
-|                      Name                       |             Type              |                    Default                    | Description                                                                                                          |
-| :---------------------------------------------: | :---------------------------: | :-------------------------------------------: | :------------------------------------------------------------------------------------------------------------------- |
-|              **[`index`](#index)**              |       `Boolean\|String`       |                 `index.html`                  | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
-|         **[`publicPath`](#publicpath)**         |           `String`            |  `output.publicPath` (from a configuration)   | The public path that the middleware is bound to.                                                                     |
-|        **[`writeToDisk`](#writetodisk)**        |      `Boolean\|Function`      |                    `false`                    | Instructs the module to write files to the configured location on disk as specified in your `webpack` configuration. |
+|               Name                |        Type         |                  Default                   | Description                                                                                                          |
+| :-------------------------------: | :-----------------: | :----------------------------------------: | :------------------------------------------------------------------------------------------------------------------- |
+|       **[`index`](#index)**       |  `Boolean\|String`  |                `index.html`                | If `false` (but not `undefined`), the server will not respond to requests to the root URL.                           |
+|  **[`publicPath`](#publicpath)**  |      `String`       | `output.publicPath` (from a configuration) | The public path that the middleware is bound to.                                                                     |
+| **[`writeToDisk`](#writetodisk)** | `Boolean\|Function` |                  `false`                   | Instructs the module to write files to the configured location on disk as specified in your `webpack` configuration. |
 
 The middleware accepts an `options` Object. The following is a property reference for the Object.
 

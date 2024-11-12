@@ -218,17 +218,17 @@ function wdm(compiler, options = {}) {
     if (
       Array.isArray(/** @type {MultiCompiler} */ (context.compiler).compilers)
     ) {
-      const compiler = /** @type {MultiCompiler} */ (context.compiler);
-      const watchOptions = compiler.compilers.map(
+      const multiCompiler = /** @type {MultiCompiler} */ (context.compiler);
+      const watchOptions = multiCompiler.compilers.map(
         (childCompiler) => childCompiler.options.watchOptions || {},
       );
 
-      context.watching = compiler.watch(watchOptions, errorHandler);
+      context.watching = multiCompiler.watch(watchOptions, errorHandler);
     } else {
-      const compiler = /** @type {Compiler} */ (context.compiler);
-      const watchOptions = compiler.options.watchOptions || {};
+      const singleCompiler = /** @type {Compiler} */ (context.compiler);
+      const watchOptions = singleCompiler.options.watchOptions || {};
 
-      context.watching = compiler.watch(watchOptions, errorHandler);
+      context.watching = singleCompiler.watch(watchOptions, errorHandler);
     }
   }
 
