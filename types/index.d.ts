@@ -75,7 +75,7 @@ export = wdm;
  * @template {IncomingMessage} [RequestInternal = IncomingMessage]
  * @template {ServerResponse} [ResponseInternal = ServerResponse]
  * @typedef {Object} Options
- * @property {boolean | ((targetPath: string) => boolean)} [writeToDisk]
+ * @property {boolean | ((targetPath: string, compilationName?: string) => boolean)} [writeToDisk]
  * @property {NonNullable<Configuration["output"]>["publicPath"]} [publicPath]
  * @property {boolean | string} [index]
  * @property {boolean} [lastModified]
@@ -256,7 +256,10 @@ type Options<
   RequestInternal extends IncomingMessage = import("http").IncomingMessage,
   ResponseInternal extends ServerResponse = ServerResponse,
 > = {
-  writeToDisk?: boolean | ((targetPath: string) => boolean) | undefined;
+  writeToDisk?:
+    | boolean
+    | ((targetPath: string, compilationName?: string) => boolean)
+    | undefined;
   publicPath?: NonNullable<Configuration["output"]>["publicPath"];
   index?: string | boolean | undefined;
   lastModified?: boolean | undefined;

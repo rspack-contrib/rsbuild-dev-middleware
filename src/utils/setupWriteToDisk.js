@@ -29,11 +29,13 @@ function setupWriteToDisk(context) {
 
       compiler.hooks.assetEmitted.tapAsync(
         "DevMiddleware",
-        (file, info, callback) => {
-          const { targetPath, content } = info;
+        (_file, info, callback) => {
+          const { targetPath, content, compilation } = info;
           const { writeToDisk: filter } = context.options;
           const allowWrite =
-            filter && typeof filter === "function" ? filter(targetPath) : true;
+            filter && typeof filter === "function"
+              ? filter(targetPath, compilation.name)
+              : true;
 
           if (!allowWrite) {
             return callback();
