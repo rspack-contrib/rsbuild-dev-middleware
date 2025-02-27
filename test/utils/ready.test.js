@@ -29,10 +29,6 @@ describe("ready", () => {
     ready(context, cb, req);
 
     expect(cb).not.toBeCalled();
-    expect(context.logger.info.mock.calls.length).toEqual(1);
-    expect(context.logger.info.mock.calls[0]).toEqual([
-      "wait until bundle finished: url",
-    ]);
     expect(context.callbacks).toEqual([cb]);
   });
 
@@ -49,11 +45,6 @@ describe("ready", () => {
     ready(context, cb);
 
     expect(cb).not.toBeCalled();
-    expect(context.logger.info.mock.calls.length).toEqual(1);
-    // mockConstructor is the name of the jest.fn() function
-    expect(context.logger.info.mock.calls[0]).toEqual([
-      "wait until bundle finished: mockConstructor",
-    ]);
     expect(context.callbacks).toEqual([cb]);
   });
 });

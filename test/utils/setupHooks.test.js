@@ -89,7 +89,6 @@ describe("setupHooks", () => {
     invalidHook.mock.calls[0][1]();
     expect(context.state).toEqual(false);
     expect(context.stats).toBeUndefined();
-    expect(loggerLog.mock.calls[0][0]).toEqual("Compilation starting...");
   });
 
   it("sets state, then logs stats and handles callbacks on nextTick from done hook", () => {

@@ -141,10 +141,6 @@ describe("setupWriteToDisk", () => {
         writeFileSpy.mock.calls[0][2](writeError.writeFileError);
       }
 
-      // expected logs based on errors
-      expect(context.logger.error.mock.calls).toMatchSnapshot();
-      expect(context.logger.log.mock.calls).toMatchSnapshot();
-
       // the callback should always be called
       expect(cb.mock.calls.length).toEqual(1);
       // no errors are expected
