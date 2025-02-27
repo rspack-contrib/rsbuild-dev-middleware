@@ -17,10 +17,6 @@
  */
 function setupHooks(context) {
   function invalid() {
-    if (context.state) {
-      context.logger.log("Compilation starting...");
-    }
-
     // We are now in invalid state
     // eslint-disable-next-line no-param-reassign
     context.state = false;
@@ -40,14 +36,12 @@ function setupHooks(context) {
 
     // Do the stuff in nextTick, because bundle may be invalidated if a change happened while compiling
     process.nextTick(() => {
-      const { logger, state, callbacks } = context;
+      const { state, callbacks } = context;
 
       // Check if still in valid state
       if (!state) {
         return;
       }
-
-      logger.log("Compilation finished");
 
       // eslint-disable-next-line no-param-reassign
       context.callbacks = [];

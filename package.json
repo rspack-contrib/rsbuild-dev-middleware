@@ -20,7 +20,6 @@
   "scripts": {
     "commitlint": "commitlint --from=master",
     "security": "pnpm audit --production",
-    "lint:prettier": "prettier --cache --list-different .",
     "lint:js": "eslint --cache .",
     "lint:spelling": "cspell --cache --no-must-find-files --quiet \"**/*.*\"",
     "lint:types": "tsc --pretty --noEmit",
@@ -57,7 +56,8 @@
     "memfs": "^4.6.0",
     "mrmime": "^2.0.0",
     "on-finished": "^2.4.1",
-    "range-parser": "^1.2.1"
+    "range-parser": "^1.2.1",
+    "rslog": "^1.2.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.16.7",

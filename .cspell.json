@@ -22,7 +22,10 @@
     "cachable",
     "finalhandler",
     "mrmime",
-    "corepack"
+    "corepack",
+    "rslog",
+    "rsbuild",
+    "rspack"
   ],
   "ignorePaths": [
     "CHANGELOG.md",

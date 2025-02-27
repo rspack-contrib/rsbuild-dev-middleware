@@ -1,3 +1,5 @@
+const { logger } = require('rslog');
+
 const middleware = require("./middleware");
 const getFilenameFromUrl = require("./utils/getFilenameFromUrl");
 const setupHooks = require("./utils/setupHooks");
@@ -5,7 +7,7 @@ const setupWriteToDisk = require("./utils/setupWriteToDisk");
 const setupOutputFileSystem = require("./utils/setupOutputFileSystem");
 const ready = require("./utils/ready");
 
-const noop = () => {};
+const noop = () => { };
 
 /** @typedef {import("webpack").Compiler} Compiler */
 /** @typedef {import("webpack").MultiCompiler} MultiCompiler */
@@ -45,8 +47,6 @@ const noop = () => {};
  * @typedef {Object & { createReadStream?: import("fs").createReadStream, statSync?: import("fs").statSync, lstat?: import("fs").lstat, readFileSync?: import("fs").readFileSync }} OutputFileSystem
  */
 
-/** @typedef {ReturnType<Compiler["getInfrastructureLogger"]>} Logger */
-
 /**
  * @callback Callback
  * @param {Stats | MultiStats} [stats]
@@ -78,7 +78,6 @@ const noop = () => {};
  * @property {Options<RequestInternal, ResponseInternal>} options
  * @property {Compiler | MultiCompiler} compiler
  * @property {Watching | MultiWatching | undefined} watching
- * @property {Logger} logger
  * @property {OutputFileSystem} outputFileSystem
  */
 
@@ -187,7 +186,6 @@ function wdm(compiler, options = {}) {
     callbacks: [],
     options,
     compiler,
-    logger: compiler.getInfrastructureLogger("webpack-dev-middleware"),
   };
 
   setupHooks(context);
@@ -207,16 +205,17 @@ function wdm(compiler, options = {}) {
      */
     const errorHandler = (error) => {
       if (error) {
-        // TODO: improve that in future
-        // For example - `writeToDisk` can throw an error and right now it is ends watching.
-        // We can improve that and keep watching active, but it is require API on webpack side.
-        // Let's implement that in webpack@5 because it is rare case.
-        context.logger.error(error);
+        // format Rspack error message
+        if (error.message && error.message.includes('× Error:')) {
+          // eslint-disable-next-line no-param-reassign
+          error.message = error.message.replace('× Error:', '').trim();
+        }
+        logger.error(error);
       }
     };
 
     if (
-      Array.isArray(/** @type {MultiCompiler} */ (context.compiler).compilers)
+      Array.isArray(/** @type {MultiCompiler} */(context.compiler).compilers)
     ) {
       const multiCompiler = /** @type {MultiCompiler} */ (context.compiler);
       const watchOptions = multiCompiler.compilers.map(
