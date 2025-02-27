@@ -207,6 +207,7 @@ function wdm(compiler, options = {}) {
       if (error) {
         // format Rspack error message
         if (error.message && error.message.includes('× Error:')) {
+          // eslint-disable-next-line no-param-reassign
           error.message = error.message.replace('× Error:', '').trim();
         }
         logger.error(error);

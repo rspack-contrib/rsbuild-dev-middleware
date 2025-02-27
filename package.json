@@ -20,7 +20,6 @@
   "scripts": {
     "commitlint": "commitlint --from=master",
     "security": "pnpm audit --production",
-    "lint:prettier": "prettier --cache --list-different .",
     "lint:js": "eslint --cache .",
     "lint:spelling": "cspell --cache --no-must-find-files --quiet \"**/*.*\"",
     "lint:types": "tsc --pretty --noEmit",
