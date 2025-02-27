@@ -28,7 +28,6 @@ export = wdm;
 /**
  * @typedef {Object & { createReadStream?: import("fs").createReadStream, statSync?: import("fs").statSync, lstat?: import("fs").lstat, readFileSync?: import("fs").readFileSync }} OutputFileSystem
  */
-/** @typedef {ReturnType<Compiler["getInfrastructureLogger"]>} Logger */
 /**
  * @callback Callback
  * @param {Stats | MultiStats} [stats]
@@ -57,7 +56,6 @@ export = wdm;
  * @property {Options<RequestInternal, ResponseInternal>} options
  * @property {Compiler | MultiCompiler} compiler
  * @property {Watching | MultiWatching | undefined} watching
- * @property {Logger} logger
  * @property {OutputFileSystem} outputFileSystem
  */
 /**
@@ -163,7 +161,6 @@ declare namespace wdm {
     Watching,
     MultiWatching,
     OutputFileSystem,
-    Logger,
     Callback,
     ResponseData,
     Context,
@@ -210,7 +207,6 @@ type OutputFileSystem = Object & {
   lstat?: typeof import("fs").lstat;
   readFileSync?: typeof import("fs").readFileSync;
 };
-type Logger = ReturnType<Compiler["getInfrastructureLogger"]>;
 type Callback = (
   stats?: import("webpack").Stats | import("webpack").MultiStats | undefined,
 ) => any;
@@ -228,7 +224,6 @@ type Context<
   options: Options<RequestInternal, ResponseInternal>;
   compiler: Compiler | MultiCompiler;
   watching: Watching | MultiWatching | undefined;
-  logger: Logger;
   outputFileSystem: OutputFileSystem;
 };
 type FilledContext<

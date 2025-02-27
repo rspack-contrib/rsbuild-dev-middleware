@@ -1,4 +1,5 @@
 const mrmime = require("mrmime");
+const { logger } = require('rslog');
 
 const onFinishedStream = require("on-finished");
 
@@ -485,7 +486,7 @@ function wrapper(context) {
 
       if (extra.errorCode) {
         if (extra.errorCode === 403) {
-          context.logger.error(`Malicious path "${filename}".`);
+          logger.error(`[rsbuild-dev-middleware] Malicious path "${filename}".`);
         }
 
         sendError(extra.errorCode);
@@ -586,7 +587,7 @@ function wrapper(context) {
         }
 
         if (parsedRanges === -1) {
-          context.logger.error("Unsatisfiable range for 'Range' header.");
+          logger.error("[rsbuild-dev-middleware] Unsatisfiable range for 'Range' header.");
 
           res.setHeader(
             "Content-Range",
@@ -602,12 +603,12 @@ function wrapper(context) {
           return;
         }
         if (parsedRanges === -2) {
-          context.logger.error(
-            "A malformed 'Range' header was provided. A regular response will be sent for this request.",
+          logger.error(
+            "[rsbuild-dev-middleware] A malformed 'Range' header was provided. A regular response will be sent for this request.",
           );
         } else if (parsedRanges.length > 1) {
-          context.logger.error(
-            "A 'Range' header with multiple ranges was provided. Multiple ranges are not supported, so a regular response will be sent for this request.",
+          logger.error(
+            "[rsbuild-dev-middleware] A 'Range' header with multiple ranges was provided. Multiple ranges are not supported, so a regular response will be sent for this request.",
           );
         }
 

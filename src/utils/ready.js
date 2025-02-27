@@ -1,3 +1,4 @@
+const { logger } = require('rslog');
 /** @typedef {import("../index.js").IncomingMessage} IncomingMessage */
 /** @typedef {import("../index.js").ServerResponse} ServerResponse */
 
@@ -18,7 +19,7 @@ function ready(context, callback, req) {
 
   const name = (req && req.url) || callback.name;
 
-  context.logger.info(`wait until bundle finished${name ? `: ${name}` : ""}`);
+  logger.debug(`[rsbuild-dev-middleware] wait until bundle finished${name ? `: ${name}` : ""}`);
 
   context.callbacks.push(callback);
 }
